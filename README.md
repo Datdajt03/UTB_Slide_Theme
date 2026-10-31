@@ -38,6 +38,24 @@ Theme hỗ trợ chuyển đổi linh hoạt tỉ lệ màn hình qua tùy chọ
 
 ---
 
+## 📸 Xem Trước Giao Diện (Preview Demo)
+
+<p align="center">
+  <img src="pic_demo/test_deck_16_9_page-0001.jpg" alt="Trang bìa chính chuẩn nhận diện thương hiệu UTB" width="100%" />
+  <br>
+  <em>Trang bìa chính thức — Co-branding Trường Đại học Tây Bắc & Khoa KHTN – CN (16:9)</em>
+</p>
+
+| Slide Mục Lục | Cụm Logo Co-branding |
+| :---: | :---: |
+| <img src="pic_demo/test_deck_16_9_page-0002.jpg" alt="Slide mục lục" width="100%"/> | <img src="pic_demo/test_deck_16_9_page-0003.jpg" alt="Cụm logo co-branding" width="100%"/> |
+| **Hệ Thống Màu Sắc Nhận Diện UTB** | **Các Loại Khối Hiển Thị (Blocks)** |
+| <img src="pic_demo/test_deck_16_9_page-0004.jpg" alt="Hệ thống màu sắc" width="100%"/> | <img src="pic_demo/test_deck_16_9_page-0005.jpg" alt="Khối hiển thị blocks" width="100%"/> |
+| **Môi Trường Định Nghĩa & Ghi Chú** | **Định Lý & Công Thức Toán Học** |
+| <img src="pic_demo/test_deck_16_9_page-0006.jpg" alt="Định nghĩa và ghi chú" width="100%"/> | <img src="pic_demo/test_deck_16_9_page-0007.jpg" alt="Toán học và định lý" width="100%"/> |
+
+---
+
 ## 🌐 Kênh Thông Tin Nhà Trường
 
 - 🌐 **Website chính thức**: [https://utb.edu.vn/](https://utb.edu.vn/)
