@@ -1,0 +1,174 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{alvarez2024}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=65c3d8ce9bec8fa1d9f831422495b7d5}{%
+           family={Alvarez},
+           familyi={A\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=51018b9a8ca43d94ff8033f790bda0ee}{%
+           family={Borwein},
+           familyi={B\bibinitperiod},
+           given={J.\bibnamedelimi M.},
+           giveni={J\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{27be3d4d872b1065b95d79d8622713be}
+      \strng{fullhash}{27be3d4d872b1065b95d79d8622713be}
+      \strng{fullhashraw}{27be3d4d872b1065b95d79d8622713be}
+      \strng{bibnamehash}{27be3d4d872b1065b95d79d8622713be}
+      \strng{authorbibnamehash}{27be3d4d872b1065b95d79d8622713be}
+      \strng{authornamehash}{27be3d4d872b1065b95d79d8622713be}
+      \strng{authorfullhash}{27be3d4d872b1065b95d79d8622713be}
+      \strng{authorfullhashraw}{27be3d4d872b1065b95d79d8622713be}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{SIAM Journal on Optimization}
+      \field{number}{1}
+      \field{title}{Inertial proximal algorithms for convex optimization problems}
+      \field{volume}{34}
+      \field{year}{2024}
+      \field{pages}{112\bibrangedash 135}
+      \range{pages}{24}
+    \endentry
+    \entry{bellocruz2025}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=2f5eed3466b28761c1efca3cf924b6a7}{%
+           family={Bello-Cruz},
+           familyi={B\bibinithyphendelim C\bibinitperiod},
+           given={Yunier},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=ea906b65c314a4dc8cb39cf7d95a028c}{%
+           family={Gonçalves},
+           familyi={G\bibinitperiod},
+           given={Max\bibnamedelimb L.\bibnamedelimi N.},
+           giveni={M\bibinitperiod\bibinitdelim L\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=3976ee7fcf73a52d8d668d746576db93}{%
+           family={Santos},
+           familyi={S\bibinitperiod},
+           given={Gabriel\bibnamedelima L.},
+           giveni={G\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{783638b7c34266e02bda5cda29fc7895}
+      \strng{fullhash}{a4063ee2aa9adc8e5f081f8b337e447a}
+      \strng{fullhashraw}{a4063ee2aa9adc8e5f081f8b337e447a}
+      \strng{bibnamehash}{a4063ee2aa9adc8e5f081f8b337e447a}
+      \strng{authorbibnamehash}{a4063ee2aa9adc8e5f081f8b337e447a}
+      \strng{authornamehash}{783638b7c34266e02bda5cda29fc7895}
+      \strng{authorfullhash}{a4063ee2aa9adc8e5f081f8b337e447a}
+      \strng{authorfullhashraw}{a4063ee2aa9adc8e5f081f8b337e447a}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Computational Optimization and Applications}
+      \field{title}{A proximal gradient method with an explicit line search for multiobjective optimization}
+      \field{volume}{92}
+      \field{year}{2025}
+    \endentry
+    \entry{utb2026}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=a1dd159dba5f13a6492928a51f60cfbd}{%
+           family={Đạt},
+           familyi={Đ\bibinitperiod},
+           given={Lò\bibnamedelima Mạnh},
+           giveni={L\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=c1b905ed32c663cc4fb2d3dcad383acd}{%
+           family={C},
+           familyi={C\bibinitperiod},
+           given={Lê\bibnamedelima Văn\bibnamedelima Thu},
+           giveni={L\bibinitperiod\bibinitdelim V\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+      }
+      \strng{namehash}{17a1eb84540702e7ec3b2e3058d709a6}
+      \strng{fullhash}{17a1eb84540702e7ec3b2e3058d709a6}
+      \strng{fullhashraw}{17a1eb84540702e7ec3b2e3058d709a6}
+      \strng{bibnamehash}{17a1eb84540702e7ec3b2e3058d709a6}
+      \strng{authorbibnamehash}{17a1eb84540702e7ec3b2e3058d709a6}
+      \strng{authornamehash}{17a1eb84540702e7ec3b2e3058d709a6}
+      \strng{authorfullhash}{17a1eb84540702e7ec3b2e3058d709a6}
+      \strng{authorfullhashraw}{17a1eb84540702e7ec3b2e3058d709a6}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Tạp chí Khoa học Trường Đại học Tây Bắc}
+      \field{number}{2}
+      \field{title}{Mẫu trình chiếu Beamer chuẩn nhận diện thương hiệu Trường Đại học Tây Bắc}
+      \field{volume}{10}
+      \field{year}{2026}
+      \field{pages}{45\bibrangedash 58}
+      \range{pages}{14}
+    \endentry
+    \entry{nesterov2018}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=8a41b35fe7b3d1725cb95bd7eec40b01}{%
+           family={Nesterov},
+           familyi={N\bibinitperiod},
+           given={Yurii},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=d67c5bf3b7cc0ec3f084a82a52a3c802}{%
+           family={Gasnikov},
+           familyi={G\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod}}}%
+        {{hash=59bf30674d3a27b485214e300ff5db80}{%
+           family={Guminov},
+           familyi={G\bibinitperiod},
+           given={Sergey},
+           giveni={S\bibinitperiod}}}%
+        {{hash=61ac864dbbd67311582368939f9aeb25}{%
+           family={Dvurechensky},
+           familyi={D\bibinitperiod},
+           given={Pavel},
+           giveni={P\bibinitperiod}}}%
+        {{hash=b7bb695716d8b9e139e5d51d5dfd3567}{%
+           family={Nemirovski},
+           familyi={N\bibinitperiod},
+           given={Arkadi},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{b2298b2878c5f04f8f0c1d4799a1e23d}
+      \strng{fullhash}{c13404f22236303bbff7b14581932fc0}
+      \strng{fullhashraw}{c13404f22236303bbff7b14581932fc0}
+      \strng{bibnamehash}{b2298b2878c5f04f8f0c1d4799a1e23d}
+      \strng{authorbibnamehash}{b2298b2878c5f04f8f0c1d4799a1e23d}
+      \strng{authornamehash}{b2298b2878c5f04f8f0c1d4799a1e23d}
+      \strng{authorfullhash}{c13404f22236303bbff7b14581932fc0}
+      \strng{authorfullhashraw}{c13404f22236303bbff7b14581932fc0}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Mathematical Programming Series A}
+      \field{number}{1}
+      \field{title}{Accelerated primal-dual gradient methods for smooth and convex-concave saddle-point problems with bilinear coupling}
+      \field{volume}{189}
+      \field{year}{2021}
+      \field{pages}{1\bibrangedash 44}
+      \range{pages}{44}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

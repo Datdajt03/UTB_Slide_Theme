@@ -1,0 +1,20 @@
+\beamer@sectionintoc {1}{Giới thiệu \& quy chuẩn}{5}{0}{1}
+\beamer@subsectionintoc {1}{1}{Hệ thống nhận diện thương hiệu}{6}{0}{1}
+\beamer@subsectionintoc {1}{2}{Hệ thống màu sắc nhận diện thương hiệu}{7}{0}{1}
+\beamer@sectionintoc {2}{Các khối nội dung \& giải thuật}{8}{0}{2}
+\beamer@subsectionintoc {2}{1}{Các loại khối hiển thị}{9}{0}{2}
+\beamer@subsectionintoc {2}{2}{Môi trường định nghĩa \& khối ghi chú}{10}{0}{2}
+\beamer@subsectionintoc {2}{3}{Môi trường toán học chuẩn Beamer}{11}{0}{2}
+\beamer@subsectionintoc {2}{4}{Tùy biến danh sách (enumitem \& tasks)}{12}{0}{2}
+\beamer@subsectionintoc {2}{5}{Toán học chuyên sâu \& biểu đồ TikZ}{13}{0}{2}
+\beamer@subsectionintoc {2}{6}{Bảng dữ liệu nâng cao}{14}{0}{2}
+\beamer@subsectionintoc {2}{7}{Mã giải thuật \& lập trình}{15}{0}{2}
+\beamer@sectionintoc {3}{Trích dẫn \& tài liệu tham khảo}{16}{0}{3}
+\beamer@subsectionintoc {3}{1}{Bố cục wrapfig \& trích dẫn}{17}{0}{3}
+\beamer@subsectionintoc {3}{2}{Phương pháp tối ưu hóa đa mục tiêu}{18}{0}{3}
+\beamer@subsectionintoc {3}{3}{Thuật toán quán tính trong không gian Hilbert}{19}{0}{3}
+\beamer@sectionintoc {4}{Tùy biến \& linh hoạt}{20}{0}{4}
+\beamer@subsectionintoc {4}{1}{Bảng tùy chọn theme UTB}{20}{0}{4}
+\beamer@subsectionintoc {4}{2}{Các kiểu khung hình (Frame Types)}{21}{0}{4}
+\beamer@subsectionintoc {4}{3}{Gợi ý phối màu \& tỉ lệ Beamer}{22}{0}{4}
+\beamer@subsectionintoc {4}{4}{Yêu cầu cài đặt \& biên dịch}{23}{0}{4}
