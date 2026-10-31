@@ -1,0 +1,137 @@
+%% beamerfontthemeUTB.sty -- Typography configuration for the UTB Beamer theme
+%% Trường Đại học Tây Bắc (UTB)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerfontthemeUTB}[2026/10/31 UTB Beamer font theme]
+
+\mode<presentation>
+
+\RequirePackage{fontspec}
+
+%% Font selection based on theme option: font = rokkit | lato | arial | times | cm
+\def\utb@opt@rokkit{rokkit}
+\def\utb@opt@lato{lato}
+\def\utb@opt@arial{arial}
+\def\utb@opt@times{times}
+\def\utb@opt@cm{cm}
+
+\ifx\utb@fontsel\utb@opt@arial
+  \setsansfont{Arial}[Ligatures=TeX]
+  \setmainfont{Arial}[Ligatures=TeX]
+\else\ifx\utb@fontsel\utb@opt@times
+  \setsansfont{Times New Roman}[Ligatures=TeX]
+  \setmainfont{Times New Roman}[Ligatures=TeX]
+\else\ifx\utb@fontsel\utb@opt@cm
+  \IfFontExistsTF{Latin Modern Sans}{%
+    \setsansfont{Latin Modern Sans}[Ligatures=TeX]
+    \setmainfont{Latin Modern Roman}[Ligatures=TeX]
+  }{%
+    \setsansfont{LMSans10-Regular}[Ligatures=TeX]
+    \setmainfont{LMRoman10-Regular}[Ligatures=TeX]
+  }
+\else\ifx\utb@fontsel\utb@opt@lato
+  \IfFontExistsTF{Lato}{%
+    \setsansfont{Lato}[Ligatures=TeX]
+    \setmainfont{Lato}[Ligatures=TeX]
+  }{%
+    \setsansfont{Arial}[Ligatures=TeX]
+    \setmainfont{Arial}[Ligatures=TeX]
+  }
+\else
+  %% Default / rokkit: Check Rokkitt -> Rokkit -> Lato -> Arial
+  \IfFontExistsTF{Rokkitt}{%
+    \setsansfont{Rokkitt}[Ligatures=TeX]
+    \setmainfont{Rokkitt}[Ligatures=TeX]
+  }{%
+    \IfFontExistsTF{Rokkit}{%
+      \setsansfont{Rokkit}[Ligatures=TeX]
+      \setmainfont{Rokkit}[Ligatures=TeX]
+    }{%
+      \IfFontExistsTF{Lato}{%
+        \setsansfont{Lato}[Ligatures=TeX]
+        \setmainfont{Lato}[Ligatures=TeX]
+      }{%
+        \setsansfont{Arial}[Ligatures=TeX]
+        \setmainfont{Arial}[Ligatures=TeX]
+      }%
+    }%
+  }
+\fi\fi\fi\fi
+
+%% Title font option: titlefont = same | avantgarde | barberfill
+\def\utb@opt@avantgarde{avantgarde}
+\def\utb@opt@barberfill{barberfill}
+\ifx\utb@tfontsel\utb@opt@barberfill
+  \IfFontExistsTF{Barber Fill}{%
+    \newfontfamily\utb@titlefamily{Barber Fill}[Ligatures=TeX]
+  }{%
+    \IfFontExistsTF{barber fill}{%
+      \newfontfamily\utb@titlefamily{barber fill}[Ligatures=TeX]
+    }{%
+      \IfFontExistsTF{TeX Gyre Adventor}{%
+        \newfontfamily\utb@titlefamily{TeX Gyre Adventor}[Ligatures=TeX, WordSpace={0.8}]
+      }{%
+        \let\utb@titlefamily\relax
+      }%
+    }%
+  }
+\else\ifx\utb@tfontsel\utb@opt@avantgarde
+  \IfFontExistsTF{TeX Gyre Adventor}{%
+    \newfontfamily\utb@titlefamily{TeX Gyre Adventor}[Ligatures=TeX, WordSpace={0.8}]
+  }{%
+    \IfFontExistsTF{AvantGarde}{%
+      \newfontfamily\utb@titlefamily{AvantGarde}[Ligatures=TeX, WordSpace={0.8}]
+    }{%
+      \let\utb@titlefamily\relax
+    }%
+  }
+\else
+  \let\utb@titlefamily\relax
+\fi\fi
+
+%% Official brand typeface for slogan & lockups (never changes with document font)
+\IfFontExistsTF{Barber Fill}{%
+  \newfontfamily\utb@brandfamily{Barber Fill}[Ligatures=TeX]
+}{%
+  \IfFontExistsTF{barber fill}{%
+    \newfontfamily\utb@brandfamily{barber fill}[Ligatures=TeX]
+  }{%
+    \IfFontExistsTF{TeX Gyre Adventor}{%
+      \newfontfamily\utb@brandfamily{TeX Gyre Adventor}[Ligatures=TeX]
+    }{%
+      \IfFontExistsTF{AvantGarde}{%
+        \newfontfamily\utb@brandfamily{AvantGarde}[Ligatures=TeX]
+      }{%
+        \IfFontExistsTF{Arial}{%
+          \newfontfamily\utb@brandfamily{Arial}[Ligatures=TeX]
+        }{%
+          \let\utb@brandfamily\sffamily
+        }%
+      }%
+    }%
+  }%
+}
+
+%% Beamer font sizes and weights matching UTB brand guidelines
+\setbeamerfont{title}{family=\utb@titlefamily, series=\bfseries, size=\Large}
+\setbeamerfont{subtitle}{series=\normalfont, size=\small}
+\setbeamerfont{author}{series=\bfseries, size=\small}
+\setbeamerfont{institute}{series=\normalfont, size=\footnotesize}
+\setbeamerfont{date}{series=\normalfont, size=\scriptsize}
+
+\setbeamerfont{frametitle}{family=\utb@titlefamily, series=\bfseries, size=\normalsize}
+\setbeamerfont{framesubtitle}{family=\utb@titlefamily, series=\bfseries, size=\scriptsize}
+
+\setbeamerfont{block title}{series=\bfseries, size=\small}
+\setbeamerfont{block body}{size=\small}
+
+\setbeamerfont{section in toc}{series=\bfseries, size=\normalsize}
+\setbeamerfont{subsection in toc}{size=\small}
+
+\setbeamerfont{footline}{series=\bfseries, size=\tiny}
+\setbeamerfont{footermeta}{size=\tiny}
+\setbeamerfont{page number in head/foot}{series=\bfseries, size=\tiny}
+\setbeamerfont{slogan}{family=\utb@brandfamily, series=\bfseries, size=\small}
+\setbeamerfont{footnote}{size=\tiny}
+
+\mode<all>
+\endinput

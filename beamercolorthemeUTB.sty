@@ -1,0 +1,53 @@
+%% beamercolorthemeUTB.sty -- Color definitions for the UTB Beamer theme
+%% Trường Đại học Tây Bắc (UTB)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamercolorthemeUTB}[2026/10/31 UTB Beamer color theme]
+
+\mode<presentation>
+
+%% Base structure
+\setbeamercolor{structure}{fg=utbmain}
+\setbeamercolor{normal text}{fg=utbblack, bg=white}
+\setbeamercolor{alerted text}{fg=utbalert}
+\setbeamercolor{example text}{fg=utbexample}
+
+%% Title and Header
+\setbeamercolor{title}{fg=utbcover}
+\setbeamercolor{subtitle}{fg=utbblack}
+\setbeamercolor{author}{fg=utbaccent}
+\setbeamercolor{institute}{fg=utbblack}
+\setbeamercolor{date}{fg=utbblack}
+
+\setbeamercolor{frametitle}{fg=white, bg=utbmain}
+\setbeamercolor{framesubtitle}{fg=utbyellow}
+
+%% Lists / items
+\setbeamercolor{item}{fg=utbmain}
+\setbeamercolor{subitem}{fg=utbaccent}
+\setbeamercolor{subsubitem}{fg=utbmain}
+\setbeamercolor{description item}{fg=utbmain}
+\setbeamercolor{enumerate item}{fg=utbmain}
+\setbeamercolor{enumerate subitem}{fg=utbaccent}
+
+%% Standard Blocks
+\setbeamercolor{block title}{fg=white, bg=utbmain}
+\setbeamercolor{block body}{fg=utbblack, bg=utbmain!7}
+
+%% Alert Blocks
+\setbeamercolor{block title alerted}{fg=white, bg=utbalert}
+\setbeamercolor{block body alerted}{fg=utbblack, bg=utbalert!8}
+
+%% Example Blocks
+\setbeamercolor{block title example}{fg=white, bg=utbexample}
+\setbeamercolor{block body example}{fg=utbblack, bg=utbexample!8}
+
+%% Table of Contents
+\setbeamercolor{section in toc}{fg=utbmain}
+\setbeamercolor{subsection in toc}{fg=utbblack}
+
+%% Footer
+\setbeamercolor{footline}{fg=utbmain}
+\setbeamercolor{page number in head/foot}{fg=utbmain}
+
+\mode<all>
+\endinput

@@ -1,0 +1,1061 @@
+%% utb-core.sty -- shared options, brand colours and geometry for the UTB Beamer theme
+%% Trường Đại học Tây Bắc (UTB / Tay Bac University)
+%%
+%% Everything that depends on the paper ratio lives here as *fractions* of the
+%% page width / height, measured from the official PPTX templates (16:9 and 4:3).
+%% Ratios other than 16:9 / 4:3 (5:4, 16:10, 14:9, 3:2 ...) use the closest of
+%% the two measured sets (wide set for width/height >= 1.55, otherwise 4:3 set).
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{utb-core}[2026/10/31 UTB Beamer theme: options, colours, geometry]
+
+\RequirePackage{iftex}
+\RequirePackage{fontspec}
+\RequirePackage{xcolor}
+\RequirePackage{colortbl}
+\RequirePackage{pgfkeys}
+\RequirePackage{pgfopts}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\ifPDFTeX
+  \PackageError{utb-core}{The UTB theme needs LuaLaTeX or XeLaTeX}{%
+    It uses fontspec for Rokkitt / Lato / Arial / Times New Roman.^^J%
+    TeXstudio: Options > Configure TeXstudio > Build > Default Compiler = LuaLaTeX (or XeLaTeX).}
+\fi
+
+%% ------------------------------------------------------------------ colours
+%% Source: "Hệ thống nhận diện thương hiệu Trường Đại học Tây Bắc" (UTB)
+%% Font_and_Color_UTB.txt
+\definecolor{utbgreen}{HTML}{12711F}       % Xanh đậm : #12711F (Màu chủ đạo)
+\definecolor{utbnavy}{HTML}{0B2D4F}        % Xanh navy : #0B2D4F (Màu nhận diện thứ hai)
+\definecolor{utblightgreen}{HTML}{CDFAB1}  % Xanh non : #CDFAB1 (Màu nhạt)
+\definecolor{utbdarkgreen}{HTML}{105419}   % Xanh đậm : #105419 (Nền banner dàn ý slide)
+\definecolor{utbwhite}{HTML}{FFFFFF}       % Trắng : #FFFFFF
+\definecolor{utbblack}{HTML}{231F20}       % Đen nhận diện tiêu chuẩn
+\definecolor{utbgray}{HTML}{A6A6A6}        % Xám nhận diện
+\definecolor{utbyellow}{HTML}{FFDE59}      % Vàng phụ đề tương phản cao
+\definecolor{utborange}{HTML}{F57F20}      % Cam bổ trợ ví dụ
+\definecolor{utbred}{HTML}{CE1628}         % Đỏ cảnh báo
+
+%% Brand color aliases & User macro colors
+\colorlet{UTBGreen}{utbgreen}
+\colorlet{UTBNavy}{utbnavy}
+\colorlet{UTBLightGreen}{utblightgreen}
+\colorlet{UTBDarkGreen}{utbdarkgreen}
+\colorlet{UTBWhite}{utbwhite}
+\colorlet{UTBBlack}{utbblack}
+\colorlet{UTBGray}{utbgray}
+\colorlet{UTBYellow}{utbyellow}
+\colorlet{UTBOrange}{utborange}
+\colorlet{UTBRed}{utbred}
+
+%% Backward compatibility aliases for HUST colors
+\colorlet{HUSTNavy}{utbnavy}
+\colorlet{HUSTBlue}{utbgreen}
+\colorlet{HUSTRed}{utbred}
+\colorlet{HUSTYellow}{utbyellow}
+\colorlet{HUSTOrange}{utborange}
+\colorlet{HUSTBlack}{utbblack}
+\colorlet{HUSTGray}{utbgray}
+\colorlet{HUSTGrey}{utbgray}
+\colorlet{HUSTWhite}{utbwhite}
+\colorlet{HUSTLightBlue}{utblightgreen}
+\colorlet{HUSTLightRed}{utbred}
+\colorlet{HUSTSubYellow}{utbyellow}
+\colorlet{HUSTAmber}{utbyellow}
+\definecolor{HUSTPink}{RGB}{192, 32, 53}
+
+%% ------------------------------------------------------------------ assets
+\graphicspath{{assets/}{./assets/}{utb-beamer/assets/}{./utb-beamer/assets/}}
+
+%% ------------------------------------------------------- ratio -> profile
+\newif\ifutb@wide
+\ifdim\dimexpr\paperwidth*20\relax<\dimexpr\paperheight*31\relax
+  \utb@widefalse   % width/height < 1.55  -> 4:3 measurements
+\else
+  \utb@widetrue    % width/height >= 1.55 -> 16:9 measurements
+\fi
+
+%% Compatibility flags
+\let\ifhust@wide\ifutb@wide
+
+\newcommand*\utb@param[3]{%
+  \ifutb@wide\expandafter\def\csname utbp@#1\endcsname{#2}%
+  \else\expandafter\def\csname utbp@#1\endcsname{#3}\fi}
+\newcommand*\utb@fW[1]{\dimexpr\csname utbp@#1\endcsname\paperwidth\relax}
+\newcommand*\utb@fH[1]{\dimexpr\csname utbp@#1\endcsname\paperheight\relax}
+
+%% Header band / rule (fractions of page height)
+\utb@param{bandB}{0.0927}{0.0927}   % bottom edge of the coloured header band (thick mode)
+\utb@param{bandThinB}{0.1080}{0.1100}% bottom edge of the coloured header band (thin mode)
+\utb@param{titleY}{0.0160}{0.0160}  % top padding for two-line frametitle + subtitle
+\utb@param{ruleT}{0.1160}{0.1180}   % top edge of the accent rule / bar
+\utb@param{thinB}{0.1236}{0.1256}   % bottom edge of the thin rule
+\utb@param{thickB}{0.1622}{0.1622}  % bottom edge of the thick bar
+%% text area
+\utb@param{bodyTopThin}{0.1544}{0.1404}
+\utb@param{bodyTopThick}{0.2050}{0.1770}
+\utb@param{bodyBot}{0.8850}{0.9250}
+\utb@param{mL}{0.0278}{0.0257}      % left = right text margin (fraction of width)
+%% footer: rule + logo, everything centred on footY
+\utb@param{footY}{0.9329}{0.9390}
+\utb@param{footLineH}{0.0026}{0.0034}
+\utb@param{footX}{0.0260}{0.0250}   % left edge of the footer logo
+\utb@param{footXend}{0.9740}{0.9750}% right end of the footer rule
+\utb@param{fullW}{0.2433}{0.2595}   % logo widths (fraction of page width)
+\utb@param{markW}{0.0261}{0.0280}
+\utb@param{wordmarkW}{0.1004}{0.1070}
+\utb@param{utbW}{0.1004}{0.1070}
+\utb@param{hustW}{0.1004}{0.1070}
+\utb@param{gapfull}{0.0270}{0.0185}  % space between logo and rule start
+\utb@param{gapmark}{0.0130}{0.0145}
+\utb@param{gapwordmark}{0.0255}{0.0220}
+\utb@param{gaputb}{0.0255}{0.0220}
+\utb@param{gaphust}{0.0255}{0.0220}
+\utb@param{numR}{0.9760}{0.9760}    % slide-number right edge (fraction of width)
+\utb@param{numY}{0.9734}{0.9843}    % slide-number vertical centre
+%% cover
+\utb@param{coverLogoX}{0.0317}{0.0452}
+\utb@param{coverLogoY}{0.0483}{0.0581}
+\utb@param{coverLogoW}{0.2604}{0.2228}
+\utb@param{coverLogoH}{0.1111}{0.1150}
+\utb@param{coverTitleY}{0.3236}{0.3530}
+\utb@param{coverTextW}{0.6020}{0.8030}
+\utb@param{coverAuthorW}{0.5200}{0.4000}
+\utb@param{sloganY}{0.0800}{0.0800}
+
+\definecolor{utbgrayline}{HTML}{A6A6A6}
+\definecolor{famiblue}{HTML}{0062A5}
+\colorlet{utbcoverlightgreen}{utblightgreen!40!white}
+
+%% ------------------------------------------------------------ user options
+\def\utb@fontsel{rokkit}
+\def\utb@tfontsel{avantgarde}
+\def\utb@coverbg{cover}
+\def\utb@footertext{}
+\def\utb@lefttext{}
+\def\utb@slogantext{TRƯỜNG ĐẠI HỌC TÂY BẮC}
+\def\utb@val@hidden{Hidden}
+\def\utb@val@hidden@lower{hidden}
+\def\utb@val@none{none}
+\def\utbtoctitle{Nội dung chính}
+\def\utbtocsubtitle{}
+\def\utbreftitle{Tài liệu tham khảo}
+\def\utbrefsubtitle{}
+\newif\ifutb@sec@showpanel
+\utb@sec@showpaneltrue
+\def\utb@logounit{}
+\def\utb@logovn{TRƯỜNG ĐẠI HỌC TÂY BẮC}
+\def\utb@logoen{TAY BAC UNIVERSITY}
+\def\utb@logomode{vector}
+\def\utb@logolayout{2}
+\def\utb@logotwoimage{}
+\def\utb@logotwovn{KHOA KHOA HỌC TỰ NHIÊN - CÔNG NGHỆ}
+\def\utb@logotwoen{Faculty of Natural Sciences and Technology}
+\def\utb@logotwocolor{utbnavy}
+\def\utb@logotwolayout{1}
+\def\utb@logotwosep{rule}
+\newif\ifutb@dateaddress
+\utb@dateaddresstrue
+\def\utb@date@address{Sơn La}
+\newif\ifutb@footermeta
+\utb@footermetafalse
+\def\utb@footer@author{}
+\def\utb@footer@title{}
+\def\utb@footer@date{}
+\def\utb@recorded@shortdate{}
+\def\utb@citemaxlines{4}
+\def\utb@citetitlemax{0}
+\def\utb@citejournalmax{0}
+\def\utb@citeauthormax{0}
+\def\utb@footertitlemax{-1}
+\def\utb@footerauthormax{-1}
+\def\utb@citecolumns{auto}
+\def\utb@citemax{8}
+\def\utb@headerright{off}
+\def\utb@headerlogo{}
+\def\utb@framebg{off}
+\def\utb@framebg@col{auto}
+\def\utb@framebg@opacity{0.08}
+\def\utb@framebg@height{auto}
+\def\utb@val@auto{auto}
+\def\utb@coverlight@opacity{0.18}
+
+%% Backward compatibility aliases for definitions
+\let\husttoctitle\utbtoctitle
+\let\husttocsubtitle\utbtocsubtitle
+\let\hustreftitle\utbreftitle
+\let\hustrefsubtitle\utbrefsubtitle
+
+%% UTF-8 safe word-boundary string truncation for footer citations & notes
+\ifdefined\directlua
+\directlua{
+  function utb_utf8_truncate(str, max_len)
+    max_len = tonumber(max_len) or 35
+    if max_len <= 0 or not str or str == "" then
+      tex.sprint(str or "")
+      return
+    end
+    local ulen = unicode.utf8.len(str)
+    if not ulen or ulen <= max_len then
+      tex.sprint(str)
+      return
+    end
+    local sub = unicode.utf8.sub(str, 1, max_len)
+    local lb = string.char(123)
+    local rb = string.char(125)
+    local dl = string.char(36)
+    local depth = 0
+    local in_math = false
+    local last_space = nil
+    local min_cut = math.floor(max_len * 0.55)
+    for i = 1, max_len do
+      local ch = unicode.utf8.sub(sub, i, i)
+      if ch == dl then
+        in_math = not in_math
+      elseif ch == lb then
+        depth = depth + 1
+      elseif ch == rb and depth > 0 then
+        depth = depth - 1
+      elseif ch == " " and depth == 0 and not in_math and i >= min_cut then
+        last_space = i - 1
+      end
+    end
+    if last_space and last_space > 0 then
+      sub = unicode.utf8.sub(sub, 1, last_space)
+    end
+    while string.len(sub) > 0 do
+      local lastc = string.sub(sub, -1)
+      if lastc == " " or lastc == "," or lastc == ";" or lastc == ":" or lastc == "." or lastc == "-" then
+        sub = string.sub(sub, 1, -2)
+      else
+        break
+      end
+    end
+    local open_b = 0
+    local open_m = false
+    for i = 1, string.len(sub) do
+      local c = string.sub(sub, i, i)
+      if c == dl then open_m = not open_m
+      elseif c == lb then open_b = open_b + 1
+      elseif c == rb and open_b > 0 then open_b = open_b - 1 end
+    end
+    if open_m then sub = sub .. dl end
+    if open_b > 0 then sub = sub .. string.rep(rb, open_b) end
+    tex.sprint(sub .. "...")
+  end
+  hust_utf8_truncate = utb_utf8_truncate
+}
+\newcommand{\utbtruncate}[2]{%
+  \directlua{utb_utf8_truncate("\luaescapestring{\unexpanded{#2}}", \number\numexpr#1\relax)}%
+}
+\let\husttruncate\utbtruncate
+
+%% Width-based string truncation
+\newbox\utb@tbox
+\newdimen\utb@tmax
+\newcount\utb@tlow
+\newcount\utb@thigh
+\newcount\utb@tmid
+\def\utb@tbest{...}
+
+\directlua{
+  utb_t_str = ""
+  function utb_t_set(s)
+    utb_t_str = s
+    return unicode.utf8.len(s)
+  end
+  function utb_t_sub(k)
+    local sub = unicode.utf8.sub(utb_t_str, 1, k)
+    while string.sub(sub, -1) == " " do
+      sub = string.sub(sub, 1, -2)
+    end
+    local bs = string.match(sub, "\\+$")
+    if bs and math.fmod(string.len(bs), 2) == 1 then
+      sub = string.sub(sub, 1, -2)
+    end
+    local dl = string.char(36)
+    local lb = string.char(123)
+    local rb = string.char(125)
+    local open_b = 0
+    local open_m = false
+    for i = 1, string.len(sub) do
+      local c = string.sub(sub, i, i)
+      if c == dl then open_m = not open_m
+      elseif c == lb then open_b = open_b + 1
+      elseif c == rb and open_b > 0 then open_b = open_b - 1 end
+    end
+    if open_m then sub = sub .. dl end
+    if open_b > 0 then sub = sub .. string.rep(rb, open_b) end
+    tex.sprint(sub .. "...")
+  end
+  hust_t_str = utb_t_str
+  hust_t_set = utb_t_set
+  hust_t_sub = utb_t_sub
+}
+
+\newcommand{\utbtruncateto}[3]{%
+  \begingroup
+    #2\relax
+    \protected@edef\utb@t@str{#3}%
+    \setbox\utb@tbox=\hbox{\utb@t@str}%
+    \ifdim\wd\utb@tbox>#1\relax
+      \utb@tmax=#1\relax
+      \utb@thigh=\directlua{tex.sprint(utb_t_set("\luaescapestring{\utb@t@str}"))}\relax
+      \utb@tlow=1\relax
+      \def\utb@tbest{...}%
+      \utb@tloop{#2}%
+      \utb@tbest
+    \else
+      \utb@t@str
+    \fi
+  \endgroup
+}
+
+\def\utb@tloop#1{%
+  \ifnum\utb@tlow>\utb@thigh\else
+    \utb@tmid=\numexpr(\utb@tlow + \utb@thigh) / 2\relax
+    \begingroup
+      #1\relax
+      \setbox\utb@tbox=\hbox{\directlua{utb_t_sub(\the\utb@tmid)}}%
+      \ifdim\wd\utb@tbox>\utb@tmax\relax
+        \global\utb@thigh=\numexpr\utb@tmid - 1\relax
+      \else
+        \global\let\utb@tmpbest\relax
+        \xdef\utb@tmpbest{\directlua{utb_t_sub(\the\utb@tmid)}}%
+        \global\utb@tlow=\numexpr\utb@tmid + 1\relax
+      \fi
+    \endgroup
+    \ifx\utb@tmpbest\relax\else
+      \let\utb@tbest\utb@tmpbest
+      \global\let\utb@tmpbest\relax
+    \fi
+    \utb@tloop{#1}%
+  \fi
+}
+\let\utbtruncatetowidth\utbtruncateto
+\let\husttruncateto\utbtruncateto
+\let\husttruncatetowidth\utbtruncateto
+\else
+\newcommand{\utbtruncate}[2]{#2}
+\newcommand{\utbtruncateto}[3]{#3}
+\let\utbtruncatetowidth\utbtruncateto
+\let\husttruncate\utbtruncate
+\let\husttruncateto\utbtruncateto
+\let\husttruncatetowidth\utbtruncateto
+\fi
+
+%% ------------------------------------------------------------ Pgfkeys Options
+\pgfkeys{/utb/.cd,
+  color/.is choice,
+  color/green/.code={%
+    \def\utb@colname{green}%
+    \colorlet{utbmain}{utbgreen}        % #12711F - header band, structure, headings
+    \colorlet{utbaccent}{utbnavy}       % #0B2D4F - rule / bar under the band
+    \colorlet{utbalert}{utbnavy}
+    \colorlet{utbexample}{utborange}
+    \colorlet{utbcover}{utbgreen}%
+    \colorlet{hustmain}{utbgreen}%
+    \colorlet{hustaccent}{utbnavy}%
+    \colorlet{hustalert}{utbnavy}%
+    \colorlet{hustexample}{utborange}%
+    \colorlet{hustcover}{utbgreen}%
+  },
+  color/navy/.code={%
+    \def\utb@colname{green}% (images use green background set)
+    \colorlet{utbmain}{utbnavy}
+    \colorlet{utbaccent}{utbgreen}
+    \colorlet{utbalert}{utbred}
+    \colorlet{utbexample}{utborange}
+    \colorlet{utbcover}{utbnavy}%
+    \colorlet{hustmain}{utbnavy}%
+    \colorlet{hustaccent}{utbgreen}%
+    \colorlet{hustalert}{utbred}%
+    \colorlet{hustexample}{utborange}%
+    \colorlet{hustcover}{utbnavy}%
+  },
+  color/blue/.code={% Alias to green as requested by user
+    \def\utb@colname{green}%
+    \colorlet{utbmain}{utbgreen}
+    \colorlet{utbaccent}{utbnavy}
+    \colorlet{utbalert}{utbnavy}
+    \colorlet{utbexample}{utborange}
+    \colorlet{utbcover}{utbgreen}%
+    \colorlet{hustmain}{utbgreen}%
+    \colorlet{hustaccent}{utbnavy}%
+    \colorlet{hustalert}{utbnavy}%
+    \colorlet{hustexample}{utborange}%
+    \colorlet{hustcover}{utbgreen}%
+  },
+  font/.is choice,
+  font/rokkit/.code={\def\utb@fontsel{rokkit}},
+  font/rokkitt/.code={\def\utb@fontsel{rokkit}},
+  font/lato/.code={\def\utb@fontsel{lato}},
+  font/arial/.code={\def\utb@fontsel{arial}},
+  font/times/.code={\def\utb@fontsel{times}},
+  font/cm/.code={\def\utb@fontsel{cm}},
+  font/computermodern/.code={\def\utb@fontsel{cm}},
+  titlefont/.is choice,
+  titlefont/same/.code={\def\utb@tfontsel{same}},
+  titlefont/avantgarde/.code={\def\utb@tfontsel{avantgarde}},
+  titlefont/barberfill/.code={\def\utb@tfontsel{barberfill}},
+  titlefont/barber/.code={\def\utb@tfontsel{barberfill}},
+  footerlogo/.is choice,
+  footerlogo/full/.code={\def\utb@flogo{full}},
+  footerlogo/mark/.code={\def\utb@flogo{mark}},
+  footerlogo/wordmark/.code={\def\utb@flogo{wordmark}},
+  footerlogo/utb/.code={\def\utb@flogo{utb}},
+  footerlogo/hust/.code={\def\utb@flogo{utb}},
+  footerlogo/none/.code={\def\utb@flogo{none}},
+  bar/.is choice,
+  bar/thin/.code={\def\utb@bar{thin}},
+  bar/thick/.code={\def\utb@bar{thick}},
+  titlepage/.is choice,
+  titlepage/cover/.code={\def\utb@titlepage{cover}\def\utb@coverbg{cover}},
+  titlepage/solid/.code={\def\utb@titlepage{cover}\def\utb@coverbg{solid}},
+  titlepage/light/.code={\def\utb@titlepage{cover}\def\utb@coverbg{light}},
+  titlepage/cover-solid/.code={\def\utb@titlepage{cover}\def\utb@coverbg{solid}},
+  titlepage/cover-light/.code={\def\utb@titlepage{cover}\def\utb@coverbg{light}},
+  titlepage/dark/.code={\def\utb@titlepage{dark}},
+  titlepage/welcome/.code={\def\utb@titlepage{welcome}},
+  coverbg/.is choice,
+  coverbg/cover/.code={\def\utb@coverbg{cover}},
+  coverbg/default/.code={\def\utb@coverbg{cover}},
+  coverbg/solid/.code={\def\utb@coverbg{solid}},
+  coverbg/light/.code={\def\utb@coverbg{light}},
+  titlebg/.is choice,
+  titlebg/cover/.code={\def\utb@coverbg{cover}},
+  titlebg/default/.code={\def\utb@coverbg{cover}},
+  titlebg/solid/.code={\def\utb@coverbg{solid}},
+  titlebg/light/.code={\def\utb@coverbg{light}},
+  sectionpage/.is choice,
+  sectionpage/none/.code={\def\utb@sectionpage{none}},
+  sectionpage/panel/.code={\def\utb@sectionpage{panel}},
+  sectionpanel/.is choice,
+  sectionpanel/true/.code={\utb@sec@showpaneltrue},
+  sectionpanel/false/.code={\utb@sec@showpanelfalse},
+  sectionpanel/on/.code={\utb@sec@showpaneltrue},
+  sectionpanel/off/.code={\utb@sec@showpanelfalse},
+  numbering/.is choice,
+  numbering/none/.code={\def\utb@numbering{none}},
+  numbering/plain/.code={\def\utb@numbering{plain}},
+  numbering/fraction/.code={\def\utb@numbering{fraction}},
+  slogan/.is choice,
+  slogan/on/.code={\def\utb@slogan{on}},
+  slogan/true/.code={\def\utb@slogan{on}},
+  slogan/off/.code={\def\utb@slogan{off}},
+  slogan/false/.code={\def\utb@slogan{off}},
+  slogan/none/.code={\def\utb@slogan{off}},
+  slogantext/.store in=\utb@slogantext,
+  wordmark/.is choice,
+  wordmark/on/.code={\def\utb@wordmark{on}},
+  wordmark/true/.code={\def\utb@wordmark{on}},
+  wordmark/off/.code={\def\utb@wordmark{off}},
+  wordmark/false/.code={\def\utb@wordmark{off}},
+  wordmark/none/.code={\def\utb@wordmark{off}},
+  toctitle/.code={\def\utbtoctitle{#1}},
+  tocsubtitle/.code={%
+    \def\utb@tmp{#1}%
+    \ifdefstring{\utb@tmp}{Hidden}{\def\utbtocsubtitle{}}{%
+      \ifdefstring{\utb@tmp}{hidden}{\def\utbtocsubtitle{}}{%
+        \ifdefstring{\utb@tmp}{none}{\def\utbtocsubtitle{}}{%
+          \def\utbtocsubtitle{#1}%
+        }%
+      }%
+    }%
+  },
+  reftitle/.code={\def\utbreftitle{#1}},
+  refsubtitle/.code={%
+    \def\utb@tmp{#1}%
+    \ifdefstring{\utb@tmp}{Hidden}{\def\utbrefsubtitle{}}{%
+      \ifdefstring{\utb@tmp}{hidden}{\def\utbrefsubtitle{}}{%
+        \ifdefstring{\utb@tmp}{none}{\def\utbrefsubtitle{}}{%
+          \def\utbrefsubtitle{#1}%
+        }%
+      }%
+    }%
+  },
+  panelsocial/.is choice,
+  panelsocial/on/.code={\def\utb@panelsocial{on}},
+  panelsocial/true/.code={\def\utb@panelsocial{on}},
+  panelsocial/off/.code={\def\utb@panelsocial{off}},
+  panelsocial/false/.code={\def\utb@panelsocial{off}},
+  logounit/.store in=\utb@logounit,
+  unit/.store in=\utb@logounit,
+  logovn/.store in=\utb@logovn,
+  logoen/.store in=\utb@logoen,
+  logomode/.is choice,
+  logomode/vector/.code={\def\utb@logomode{vector}},
+  logomode/image/.code={\def\utb@logomode{image}},
+  logolayout/.is choice,
+  logolayout/1/.code={\def\utb@logolayout{1}},
+  logolayout/2/.code={\def\utb@logolayout{2}},
+  logolayout/3/.code={\def\utb@logolayout{3}},
+  logolayout/1line/.code={\def\utb@logolayout{1}},
+  logolayout/2lines/.code={\def\utb@logolayout{2}},
+  logolayout/4a/.code={\def\utb@logolayout{4a}},
+  logolayout/4b/.code={\def\utb@logolayout{4b}},
+  logo2/.code={\def\utb@logotwoimage{#1}},
+  logo2image/.store in=\utb@logotwoimage,
+  logo2vn/.store in=\utb@logotwovn,
+  logo2en/.store in=\utb@logotwoen,
+  logo2color/.store in=\utb@logotwocolor,
+  logo2layout/.store in=\utb@logotwolayout,
+  logo2sep/.store in=\utb@logotwosep,
+  progressbar/.is choice,
+  progressbar/on/.code={%
+    \def\utb@progressbar{on}%
+    \def\utb@prog@h{0.058\paperheight}%
+  },
+  progressbar/true/.code={%
+    \def\utb@progressbar{on}%
+    \def\utb@prog@h{0.058\paperheight}%
+  },
+  progressbar/off/.code={%
+    \def\utb@progressbar{off}%
+    \def\utb@prog@h{0pt}%
+  },
+  progressbar/false/.code={%
+    \def\utb@progressbar{off}%
+    \def\utb@prog@h{0pt}%
+  },
+  footer/.store in=\utb@footertext,
+  footerleft/.store in=\utb@lefttext,
+  footermeta/.is choice,
+  footermeta/on/.code={\utb@footermetatrue},
+  footermeta/true/.code={\utb@footermetatrue},
+  footermeta/off/.code={\utb@footermetafalse},
+  footermeta/false/.code={\utb@footermetafalse},
+  footermeta/none/.code={\utb@footermetafalse},
+  footerinfo/.is choice,
+  footerinfo/on/.code={\utb@footermetatrue},
+  footerinfo/true/.code={\utb@footermetatrue},
+  footerinfo/off/.code={\utb@footermetafalse},
+  footerinfo/false/.code={\utb@footermetafalse},
+  footerinfo/none/.code={\utb@footermetafalse},
+  footerauthor/.code={\gdef\utb@footer@author{#1}},
+  footertitle/.code={\gdef\utb@footer@title{#1}},
+  footerdate/.code={\gdef\utb@footer@date{#1}},
+  citemaxlines/.store in=\utb@citemaxlines,
+  citetitlemax/.store in=\utb@citetitlemax,
+  citejournalmax/.store in=\utb@citejournalmax,
+  citeauthormax/.store in=\utb@citeauthormax,
+  footertitlemax/.store in=\utb@footertitlemax,
+  footerauthormax/.store in=\utb@footerauthormax,
+  citemax/.store in=\utb@citemax,
+  citecolumns/.is choice,
+  citecolumns/auto/.code={\def\utb@citecolumns{auto}},
+  citecolumns/1/.code={\def\utb@citecolumns{1}},
+  citecolumns/2/.code={\def\utb@citecolumns{2}},
+  dateaddress/.is choice,
+  dateaddress/on/.code={\utb@dateaddresstrue},
+  dateaddress/true/.code={\utb@dateaddresstrue},
+  dateaddress/off/.code={\utb@dateaddressfalse},
+  dateaddress/false/.code={\utb@dateaddressfalse},
+  dateaddress/none/.code={\utb@dateaddressfalse},
+  address/.code={%
+    \def\utb@tmp{#1}%
+    \ifdefstring{\utb@tmp}{none}{\utb@dateaddressfalse}{%
+      \ifdefstring{\utb@tmp}{off}{\utb@dateaddressfalse}{%
+        \ifdefstring{\utb@tmp}{false}{\utb@dateaddressfalse}{%
+          \utb@dateaddresstrue
+          \def\utb@date@address{#1}%
+        }%
+      }%
+    }%
+  },
+  location/.code={%
+    \def\utb@tmp{#1}%
+    \ifdefstring{\utb@tmp}{none}{\utb@dateaddressfalse}{%
+      \ifdefstring{\utb@tmp}{off}{\utb@dateaddressfalse}{%
+        \ifdefstring{\utb@tmp}{false}{\utb@dateaddressfalse}{%
+          \utb@dateaddresstrue
+          \def\utb@date@address{#1}%
+        }%
+      }%
+    }%
+  },
+  datecity/.code={%
+    \def\utb@tmp{#1}%
+    \ifdefstring{\utb@tmp}{none}{\utb@dateaddressfalse}{%
+      \ifdefstring{\utb@tmp}{off}{\utb@dateaddressfalse}{%
+        \ifdefstring{\utb@tmp}{false}{\utb@dateaddressfalse}{%
+          \utb@dateaddresstrue
+          \def\utb@date@address{#1}%
+        }%
+      }%
+    }%
+  },
+  headerright/.is choice,
+  headerright/off/.code={\def\utb@headerright{off}},
+  headerright/none/.code={\def\utb@headerright{off}},
+  headerright/false/.code={\def\utb@headerright{off}},
+  headerright/pagenumber/.code={\def\utb@headerright{pagenumber}},
+  headerright/number/.code={\def\utb@headerright{pagenumber}},
+  headerright/page/.code={\def\utb@headerright{pagenumber}},
+  headerright/logo/.code={%
+    \def\utb@headerright{logo}%
+    \ifx\utb@headerlogo\@empty
+      \ifx\utb@logotwoimage\@empty
+        \def\utb@headerlogo{utb-shield.png}%
+      \else
+        \let\utb@headerlogo\utb@logotwoimage
+      \fi
+    \fi
+  },
+  headernumber/.is choice,
+  headernumber/on/.code={\def\utb@headerright{pagenumber}},
+  headernumber/true/.code={\def\utb@headerright{pagenumber}},
+  headernumber/off/.code={\def\utb@headerright{off}},
+  headernumber/false/.code={\def\utb@headerright{off}},
+  headernumber/none/.code={\def\utb@headerright{off}},
+  pagenumberpos/.is choice,
+  pagenumberpos/footer/.code={\def\utb@headerright{off}},
+  pagenumberpos/bottom/.code={\def\utb@headerright{off}},
+  pagenumberpos/header/.code={\def\utb@headerright{pagenumber}},
+  pagenumberpos/frametitle/.code={\def\utb@headerright{pagenumber}},
+  pagenumberpos/top/.code={\def\utb@headerright{pagenumber}},
+  headerlogo/.code={%
+    \def\utb@tmp{#1}%
+    \ifdefstring{\utb@tmp}{off}{\def\utb@headerright{off}\def\utb@headerlogo{}}{%
+      \ifdefstring{\utb@tmp}{none}{\def\utb@headerright{off}\def\utb@headerlogo{}}{%
+        \ifdefstring{\utb@tmp}{false}{\def\utb@headerright{off}\def\utb@headerlogo{}}{%
+          \ifdefstring{\utb@tmp}{on}{%
+            \def\utb@headerright{logo}%
+            \ifx\utb@logotwoimage\@empty
+              \def\utb@headerlogo{utb-shield.png}%
+            \else
+              \let\utb@headerlogo\utb@logotwoimage
+            \fi
+          }{%
+            \ifdefstring{\utb@tmp}{true}{%
+              \def\utb@headerright{logo}%
+              \ifx\utb@logotwoimage\@empty
+                \def\utb@headerlogo{utb-shield.png}%
+              \else
+                \let\utb@headerlogo\utb@logotwoimage
+              \fi
+            }{%
+              \def\utb@headerright{logo}%
+              \def\utb@headerlogo{#1}%
+            }%
+          }%
+        }%
+      }%
+    }%
+  },
+  framebg/.is choice,
+  framebg/off/.code={\def\utb@framebg{off}},
+  framebg/false/.code={\def\utb@framebg{off}},
+  framebg/none/.code={\def\utb@framebg{off}},
+  framebg/on/.code={\def\utb@framebg{on}\def\utb@framebg@col{auto}},
+  framebg/true/.code={\def\utb@framebg{on}\def\utb@framebg@col{auto}},
+  framebg/auto/.code={\def\utb@framebg{on}\def\utb@framebg@col{auto}},
+  framebg/diag/.code={\def\utb@framebg{on}\def\utb@framebg@col{auto}},
+  framebg/green/.code={\def\utb@framebg{on}\def\utb@framebg@col{green}},
+  framebg/blue/.code={\def\utb@framebg{on}\def\utb@framebg@col{green}},
+  framebg/red/.code={\def\utb@framebg{on}\def\utb@framebg@col{red}},
+  framebgopacity/.store in=\utb@framebg@opacity,
+  framebgheight/.store in=\utb@framebg@height,
+  coverlightopacity/.store in=\utb@coverlight@opacity,
+}
+
+%% Defaults
+\pgfkeys{/utb/.cd, color=green, font=rokkit, titlefont=avantgarde, footerlogo=mark,
+  bar=thin, titlepage=cover, coverbg=cover, sectionpage=panel, numbering=fraction, slogan=on,
+  wordmark=on, panelsocial=on, logomode=vector, logolayout=2,
+  logo2sep=none, logo2layout=1, progressbar=on, dateaddress=on, address={Sơn La}}
+
+\newcommand*\utbsetup[1]{\pgfkeys{/utb/.cd,#1}}
+
+%% Backward compatibility
+\let\hustsetup\utbsetup
+\pgfkeys{/hust/.unknown/.code={%
+  \let\utb@currkey\pgfkeyscurrentname%
+  \pgfkeysalso{/utb/\utb@currkey=#1}%
+}}
+
+\def\utb@opt@on{on}
+\def\utb@opt@off{off}
+\def\utb@col@green{green}
+\def\utb@col@blue{green}
+\def\utb@col@auto{auto}
+\def\utb@progressbar{on}
+\def\utb@prog@h{0.058\paperheight}
+
+\newcommand{\utb@resolve@diagimg}{%
+  \ifx\utb@framebg@col\utb@col@auto
+    \edef\utb@diag@img{bg-diag-\utb@colname.png}%
+  \else
+    \edef\utb@diag@img{bg-diag-\utb@framebg@col.png}%
+  \fi
+}
+\let\hust@resolve@diagimg\utb@resolve@diagimg
+
+%% ------------------------------------------------------------ Vietnamese Date Format
+\newcommand{\utb@set@today}{%
+  \def\today{%
+    \ifutb@dateaddress
+      \ifx\utb@date@address\@empty
+        ngày \number\day\ tháng \number\month\ năm \number\year
+      \else
+        \utb@date@address, ngày \number\day\ tháng \number\month\ năm \number\year
+      \fi
+    \else
+      ngày \number\day\ tháng \number\month\ năm \number\year
+    \fi
+  }%
+}
+\utb@set@today
+\AtBeginDocument{\utb@set@today}
+
+\newcommand{\utbdate}[4][]{%
+  \gdef\utb@recorded@shortdate{\ifnum#2<10 0\fi\number#2/\ifnum#3<10 0\fi\number#3/\number#4}%
+  \begingroup
+    \def\utb@tmp@addr{\utb@date@address}%
+    \ifstrempty{#1}{}{%
+      \ifstrequal{#1}{none}{\def\utb@tmp@addr{}}{%
+        \ifstrequal{#1}{off}{\def\utb@tmp@addr{}}{%
+          \ifstrequal{#1}{false}{\def\utb@tmp@addr{}}{%
+            \def\utb@tmp@addr{#1}%
+          }%
+        }%
+      }%
+    }%
+    \ifutb@dateaddress
+      \ifx\utb@tmp@addr\@empty
+        ngày #2 tháng #3 năm #4%
+      \else
+        \utb@tmp@addr, ngày #2 tháng #3 năm #4%
+      \fi
+    \else
+      \ifstrempty{#1}{%
+        ngày #2 tháng #3 năm #4%
+      }{%
+        \ifstrequal{#1}{none}{ngày #2 tháng #3 năm #4}{%
+          \ifstrequal{#1}{off}{ngày #2 tháng #3 năm #4}{%
+            #1, ngày #2 tháng #3 năm #4%
+          }%
+        }%
+      }%
+    \fi
+  \endgroup
+}
+\let\hustdate\utbdate
+\let\vntoday\today
+\let\vietnamesedate\today
+
+\newcommand{\utb@dateshort}{%
+  \ifx\utb@recorded@shortdate\@empty
+    \ifnum\day<10 0\fi\number\day/%
+    \ifnum\month<10 0\fi\number\month/%
+    \number\year
+  \else
+    \utb@recorded@shortdate
+  \fi
+}
+
+\newcommand{\utb@cur@footerauthor}{%
+  \ifnum\utb@footerauthormax>0\relax
+    \utbtruncate{\utb@footerauthormax}{\ifdefempty{\utb@footer@author}{\insertshortauthor}{\utb@footer@author}}%
+  \else
+    \ifdefempty{\utb@footer@author}{\insertshortauthor}{\utb@footer@author}%
+  \fi
+}
+
+\newcommand{\utb@cur@footertitle}{%
+  \ifnum\utb@footertitlemax>0\relax
+    \utbtruncate{\utb@footertitlemax}{\ifdefempty{\utb@footer@title}{\insertshorttitle}{\utb@footer@title}}%
+  \else
+    \ifdefempty{\utb@footer@title}{\insertshorttitle}{\utb@footer@title}%
+  \fi
+}
+
+\newcommand{\utb@cur@footerdate}{%
+  \ifdefempty{\utb@footer@date}{\utb@dateshort}{\utb@footer@date}%
+}
+
+%% ------------------------------------------------------------ Vector Logo Lockup
+\IfFontExistsTF{Barber Fill}{%
+  \newfontfamily\utb@logofont{Barber Fill}[Ligatures=TeX]
+}{%
+  \IfFontExistsTF{barber fill}{%
+    \newfontfamily\utb@logofont{barber fill}[Ligatures=TeX]
+  }{%
+    \IfFontExistsTF{TeX Gyre Adventor}{%
+      \newfontfamily\utb@logofont{TeX Gyre Adventor}[Ligatures=TeX]
+    }{%
+      \IfFontExistsTF{Arial}{%
+        \newfontfamily\utb@logofont{Arial}[Ligatures=TeX]
+      }{%
+        \let\utb@logofont\sffamily
+      }%
+    }%
+  }%
+}
+\let\hust@logofont\utb@logofont
+
+\newdimen\utb@lh@dim
+\newdimen\utb@lgap@dim
+\newdimen\utb@rule@w
+\newsavebox\utb@box
+\newsavebox\utb@boxb
+\newsavebox\utb@logobox
+\newsavebox\utb@topbox
+\newsavebox\utb@botbox
+
+\def\utb@chknewline#1\newline#2\relax{%
+  \if\relax\detokenize{#2}\relax
+    \def\utb@unit@multiline{0}%
+  \else
+    \def\utb@unit@multiline{1}%
+  \fi
+}
+
+\def\utb@parse@two@vn#1\newline#2\newline#3\relax{%
+  \def\utb@vn@A{#1}%
+  \def\utb@vn@B{#2}%
+}
+\def\utb@parse@two@en#1\newline#2\newline#3\relax{%
+  \def\utb@en@A{#1}%
+  \def\utb@en@B{#2}%
+}
+\def\utb@render@unit#1\newline#2\relax{%
+  \hbox{\scalebox{0.86}[1]{{\normalfont\utb@logofont\fontsize{0.19\utb@lh@dim}{0.19\utb@lh@dim}\selectfont\bfseries\color{\utb@lucol}#1}}}%
+  \if\relax\detokenize{#2}\relax\else
+    \vskip 0.04\utb@lh@dim%
+    \utb@render@unit#2\relax%
+  \fi
+}
+\def\utb@render@vn@sub#1\newline#2\relax{%
+  \hbox{\scalebox{0.92}[1]{{\normalfont\utb@logofont\fontsize{0.165\utb@lh@dim}{0.165\utb@lh@dim}\selectfont\bfseries\color{\utb@lcol}#1}}}%
+  \if\relax\detokenize{#2}\relax\else
+    \vskip 0.03\utb@lh@dim%
+    \utb@render@vn@sub#2\relax%
+  \fi
+}
+\def\utb@render@unit@sub#1\newline#2\relax{%
+  \hbox{\scalebox{0.86}[1]{{\normalfont\utb@logofont\fontsize{0.18\utb@lh@dim}{0.18\utb@lh@dim}\selectfont\bfseries\color{\utb@lucol}#1}}}%
+  \if\relax\detokenize{#2}\relax\else
+    \vskip 0.03\utb@lh@dim%
+    \utb@render@unit@sub#2\relax%
+  \fi
+}
+
+\newcommand{\utblogo}[1][]{%
+  \begingroup%
+  \def\utb@lh{1.0cm}%
+  \def\utb@lgap{0.333\utb@lh@dim}%
+  \def\utb@limg{utb-shield.png}%
+  \def\utb@lunit{}%
+  \def\utb@lvn{TRƯỜNG ĐẠI HỌC TÂY BẮC}%
+  \def\utb@len{TAY BAC UNIVERSITY}%
+  \def\utb@llayout{1}%
+  \def\utb@lcol{utbblack}%
+  \def\utb@lucol{utbgreen}%
+  \def\utb@llcol{utbgrayline}%
+  \def\utb@lequalwidth{auto}%
+  \pgfkeys{/utb/logo/.cd,
+    height/.store in=\utb@lh,
+    gap/.store in=\utb@lgap,
+    image/.store in=\utb@limg,
+    unit/.store in=\utb@lunit,
+    vn/.store in=\utb@lvn,
+    en/.store in=\utb@len,
+    layout/.store in=\utb@llayout,
+    color/.store in=\utb@lcol,
+    unitcolor/.store in=\utb@lucol,
+    linecolor/.store in=\utb@llcol,
+    equalwidth/.store in=\utb@lequalwidth,
+    dark/.code={%
+      \def\utb@lcol{white}%
+      \def\utb@lucol{white}%
+      \def\utb@llcol{white!60}%
+    },
+    #1%
+  }%
+  \edef\utb@llayout{\utb@llayout}%
+  \edef\utb@limg{\utb@limg}%
+  \edef\utb@lcol{\utb@lcol}%
+  \edef\utb@lucol{\utb@lucol}%
+  \edef\utb@llcol{\utb@llcol}%
+  \edef\utb@lequalwidth{\utb@lequalwidth}%
+  \expandafter\def\expandafter\utb@lunit\expandafter{\utb@lunit}%
+  \expandafter\def\expandafter\utb@lvn\expandafter{\utb@lvn}%
+  \expandafter\def\expandafter\utb@len\expandafter{\utb@len}%
+  \utb@lh@dim=\utb@lh\relax
+  \utb@lgap@dim=\utb@lgap\relax
+  \if\relax\detokenize\expandafter{\utb@lunit}\relax
+    \sbox\utb@logobox{\scalebox{0.93}[1]{{\normalfont\utb@logofont\fontsize{0.255\utb@lh@dim}{0.255\utb@lh@dim}\selectfont\bfseries\color{\utb@lcol}\utb@lvn}}}%
+  \else
+    \expandafter\utb@chknewline\utb@lunit\newline\relax
+    \def\utb@cmp@two{2}%
+    \def\utb@cmp@twolines{2lines}%
+    \def\utb@cmp@foura{4a}%
+    \def\utb@cmp@fourb{4b}%
+    \let\utb@is@foura\undefined
+    \ifx\utb@llayout\utb@cmp@foura\def\utb@is@foura{1}\fi
+    \ifnum\utb@unit@multiline=1
+      \ifx\utb@llayout\utb@cmp@two\def\utb@is@foura{1}\fi
+      \ifx\utb@llayout\utb@cmp@twolines\def\utb@is@foura{1}\fi
+    \fi
+    \ifdefined\utb@is@foura
+      \def\utb@def@vn{TRƯỜNG ĐẠI HỌC TÂY BẮC}%
+      \ifx\utb@lvn\utb@def@vn
+        \def\utb@lvn{TRƯỜNG ĐẠI HỌC\newline TÂY BẮC}%
+      \fi
+      \sbox\utb@topbox{\vbox{\offinterlineskip\expandafter\utb@render@vn@sub\utb@lvn\newline\relax}}%
+      \sbox\utb@botbox{\vbox{\offinterlineskip\expandafter\utb@render@unit@sub\utb@lunit\newline\relax}}%
+      \utb@rule@w=\wd\utb@topbox\relax
+      \ifdim\wd\utb@botbox>\utb@rule@w \utb@rule@w=\wd\utb@botbox\relax\fi
+    \else
+      \ifx\utb@llayout\utb@cmp@fourb
+        \def\utb@do@fourb{1}%
+      \else
+        \ifnum\utb@unit@multiline=1
+          \def\utb@do@fourb{1}%
+        \else
+          \def\utb@do@fourb{0}%
+        \fi
+      \fi
+      \ifnum\utb@do@fourb=1
+        \sbox\utb@topbox{\scalebox{0.92}[1]{{\normalfont\utb@logofont\fontsize{0.205\utb@lh@dim}{0.205\utb@lh@dim}\selectfont\bfseries\color{\utb@lcol}\utb@lvn}}}%
+        \sbox\utb@botbox{\vbox{\offinterlineskip\expandafter\utb@render@unit\utb@lunit\newline\relax}}%
+        \utb@rule@w=\wd\utb@topbox\relax
+        \ifdim\wd\utb@botbox>\utb@rule@w \utb@rule@w=\wd\utb@botbox\relax\fi
+      \else
+        \sbox\utb@topbox{\scalebox{0.92}[1]{{\normalfont\utb@logofont\fontsize{0.215\utb@lh@dim}{0.215\utb@lh@dim}\selectfont\bfseries\color{\utb@lcol}\utb@lvn}}}%
+        \sbox\utb@botbox{\scalebox{0.85}[1]{{\normalfont\utb@logofont\fontsize{0.262\utb@lh@dim}{0.262\utb@lh@dim}\selectfont\bfseries\color{\utb@lucol}\utb@lunit}}}%
+        \utb@rule@w=\wd\utb@topbox\relax
+        \ifdim\wd\utb@botbox>\utb@rule@w \utb@rule@w=\wd\utb@botbox\relax\fi
+      \fi
+    \fi
+  \fi
+  \begin{tikzpicture}[baseline={(shield.south)}]
+    \node[inner sep=0pt, outer sep=0pt, anchor=south west] (shield) at (0, 0)
+      {\includegraphics[height=\utb@lh@dim]{\utb@limg}};
+    \if\relax\detokenize\expandafter{\utb@lunit}\relax
+      \def\utb@cmp@two{2}%
+      \def\utb@cmp@twolines{2lines}%
+      \let\utb@is@laytwo\undefined
+      \ifx\utb@llayout\utb@cmp@two\def\utb@is@laytwo{1}\fi
+      \ifx\utb@llayout\utb@cmp@twolines\def\utb@is@laytwo{1}\fi
+      \ifdefined\utb@is@laytwo
+        \begingroup
+          \let\\\newline
+          \def\utb@def@vn{TRƯỜNG ĐẠI HỌC TÂY BẮC}%
+          \ifx\utb@lvn\utb@def@vn
+            \def\utb@vn@A{TRƯỜNG ĐẠI HỌC}%
+            \def\utb@vn@B{TÂY BẮC}%
+          \else
+            \expandafter\utb@parse@two@vn\utb@lvn\newline\newline\relax
+          \fi
+          \def\utb@def@en{TAY BAC UNIVERSITY}%
+          \ifx\utb@len\utb@def@en
+            \def\utb@en@A{TAY BAC}%
+            \def\utb@en@B{UNIVERSITY}%
+          \else
+            \expandafter\utb@parse@two@en\utb@len\newline\newline\relax
+          \fi
+          \node[anchor=base west, inner sep=0pt]
+            at ([xshift=\utb@lgap@dim, yshift=-0.2556\utb@lh@dim] shield.north east)
+            {\scalebox{0.92}[1]{{\normalfont\utb@logofont\fontsize{0.18\utb@lh@dim}{0.18\utb@lh@dim}\selectfont\bfseries\color{\utb@lcol}\utb@vn@A}}};
+          \node[anchor=base west, inner sep=0pt]
+            at ([xshift=\utb@lgap@dim, yshift=-0.5140\utb@lh@dim] shield.north east)
+            {\scalebox{0.92}[1]{{\normalfont\utb@logofont\fontsize{0.18\utb@lh@dim}{0.18\utb@lh@dim}\selectfont\bfseries\color{\utb@lcol}\utb@vn@B}}};
+          \node[anchor=base west, inner sep=0pt]
+            at ([xshift=\utb@lgap@dim, yshift=-0.7277\utb@lh@dim] shield.north east)
+            {{\normalfont\utb@logofont\fontsize{0.137\utb@lh@dim}{0.137\utb@lh@dim}\selectfont\mdseries\color{\utb@lcol}\utb@en@A}};
+          \node[anchor=base west, inner sep=0pt]
+            at ([xshift=\utb@lgap@dim, yshift=-0.9344\utb@lh@dim] shield.north east)
+            {{\normalfont\utb@logofont\fontsize{0.137\utb@lh@dim}{0.137\utb@lh@dim}\selectfont\mdseries\color{\utb@lcol}\utb@en@B}};
+        \endgroup
+      \else
+        \def\utb@eqw@auto{auto}%
+        \def\utb@eqw@true{true}%
+        \def\utb@def@img{utb-shield.png}%
+        \let\utb@do@eqw\undefined
+        \ifx\utb@lequalwidth\utb@eqw@true\def\utb@do@eqw{1}\fi
+        \ifx\utb@lequalwidth\utb@eqw@auto
+          \ifx\utb@limg\utb@def@img\def\utb@do@eqw{1}\fi
+        \fi
+        \node[inner sep=0pt, outer sep=0pt, anchor=west]
+          at ([xshift=\utb@lgap@dim] shield.east) {%
+            \vbox{%
+              \offinterlineskip%
+              \hbox{\usebox\utb@logobox}%
+              \vskip 0.08\utb@lh@dim%
+              \ifdefined\utb@do@eqw
+                \hbox{\resizebox{\wd\utb@logobox}{!}{{\normalfont\utb@logofont\fontsize{0.185\utb@lh@dim}{0.185\utb@lh@dim}\selectfont\mdseries\color{\utb@lcol}\utb@len}}}%
+              \else
+                \hbox{{\normalfont\utb@logofont\fontsize{0.155\utb@lh@dim}{0.155\utb@lh@dim}\selectfont\mdseries\color{\utb@lcol}\utb@len}}%
+              \fi
+            }%
+          };
+      \fi
+    \else
+      \ifdefined\utb@is@foura
+        \node[inner sep=0pt, outer sep=0pt, anchor=south west, align=left] (top)
+          at ([xshift=\utb@lgap@dim, yshift=0.04\utb@lh@dim] shield.east) {\usebox\utb@topbox};
+        \draw[\utb@llcol, line width=0.7pt]
+          ([xshift=\utb@lgap@dim] shield.east) -- ([xshift=\dimexpr\utb@lgap@dim + \utb@rule@w\relax] shield.east);
+        \node[inner sep=0pt, outer sep=0pt, anchor=north west, align=left] (bot)
+          at ([xshift=\utb@lgap@dim, yshift=-0.04\utb@lh@dim] shield.east) {\usebox\utb@botbox};
+      \else
+        \ifnum\utb@do@fourb=1
+          \node[inner sep=0pt, outer sep=0pt, anchor=south west] (top)
+            at ([xshift=\utb@lgap@dim, yshift=0.16\utb@lh@dim] shield.east) {\usebox\utb@topbox};
+          \draw[\utb@llcol, line width=0.7pt]
+            ([xshift=\utb@lgap@dim, yshift=0.095\utb@lh@dim] shield.east) --
+            ([xshift=\dimexpr\utb@lgap@dim + \utb@rule@w\relax, yshift=0.095\utb@lh@dim] shield.east);
+          \node[inner sep=0pt, outer sep=0pt, anchor=north west, align=left] (bot)
+            at ([xshift=\utb@lgap@dim, yshift=0.035\utb@lh@dim] shield.east) {\usebox\utb@botbox};
+        \else
+          \node[inner sep=0pt, outer sep=0pt, anchor=base west] (top)
+            at ([xshift=\utb@lgap@dim, yshift=0.167\utb@lh@dim] shield.east) {\usebox\utb@topbox};
+          \draw[\utb@llcol, line width=0.75pt]
+            ([xshift=\utb@lgap@dim, yshift=0.042\utb@lh@dim] shield.east) --
+            ([xshift=\dimexpr\utb@lgap@dim + \utb@rule@w\relax, yshift=0.042\utb@lh@dim] shield.east);
+          \node[inner sep=0pt, outer sep=0pt, anchor=base west] (bot)
+            at ([xshift=\utb@lgap@dim, yshift=-0.300\utb@lh@dim] shield.east) {\usebox\utb@botbox};
+        \fi
+      \fi
+    \fi
+  \end{tikzpicture}%
+  \endgroup
+}
+\let\hustlogo\utblogo
+
+%% ------------------------------------------------------------ UTB Wordmark Lockup
+\newdimen\utb@wm@h@dim
+\newsavebox\utb@wm@imgbox
+\newsavebox\utb@wm@vnbox
+\newsavebox\utb@wm@enbox
+
+\newcommand{\utbwordmarklockup}[1][]{%
+  \begingroup
+  \def\utb@wm@col{white}%
+  \def\utb@wm@h{0.11\paperheight}%
+  \def\utb@wm@img{footer-utb-white.png}%
+  \pgfkeys{/utb/wordmarklockup/.cd,
+    color/.store in=\utb@wm@col,
+    height/.store in=\utb@wm@h,
+    image/.store in=\utb@wm@img,
+    #1%
+  }%
+  \utb@wm@h@dim=\utb@wm@h\relax
+  \sbox\utb@wm@imgbox{\includegraphics[height=\utb@wm@h@dim]{\utb@wm@img}}%
+  \sbox\utb@wm@vnbox{{\utb@logofont\fontsize{0.25\utb@wm@h@dim}{0.25\utb@wm@h@dim}\selectfont\bfseries\color{\utb@wm@col}TRƯỜNG ĐẠI HỌC TÂY BẮC}}%
+  \sbox\utb@wm@enbox{{\utb@logofont\fontsize{0.14\utb@wm@h@dim}{0.14\utb@wm@h@dim}\selectfont\mdseries\color{\utb@wm@col}TAY BAC UNIVERSITY}}%
+  \vbox{%
+    \offinterlineskip%
+    \hbox{\usebox\utb@wm@imgbox}%
+    \vskip 0.33333\utb@wm@h@dim%
+    \hbox{\resizebox{\wd\utb@wm@imgbox}{!}{\usebox\utb@wm@vnbox}}%
+    \vskip 0.08\utb@wm@h@dim%
+    \hbox{\resizebox{\wd\utb@wm@imgbox}{!}{\usebox\utb@wm@enbox}}%
+  }%
+  \endgroup
+}
+\let\hustwordmarklockup\utbwordmarklockup
+
+\endinput

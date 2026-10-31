@@ -1,0 +1,877 @@
+%% beamerouterthemeUTB.sty -- Outer layout: header band, frametitle, footer for UTB theme
+%% Trường Đại học Tây Bắc (UTB)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerouterthemeUTB}[2026/10/31 UTB Beamer outer theme]
+
+\mode<presentation>
+
+\RequirePackage{tikz}
+
+%% Disable navigation symbols for clean presentation
+\setbeamertemplate{navigation symbols}{}
+
+%% Margins
+\setbeamersize{text margin left=\utb@fW{mL}, text margin right=\utb@fW{mL}}
+
+%% ----------------------------------------------------------- Progress Bar & Section Tracking
+\def\utb@nav@totalsecs{0}
+
+\newcommand{\utb@read@nav}{%
+  \ifnum\beamer@totalheads>0\relax
+    \begingroup
+      \def\slideentry##1##2##3##4##5##6{}%
+      \def\beamer@framepages##1##2{}%
+      \def\beamer@sectionpages##1##2{}%
+      \def\beamer@subsectionpages##1##2{}%
+      \def\beamer@partpages##1##2{}%
+      \def\beamer@documentpages##1{}%
+      \def\sectionentry##1##2##3##4##5{%
+        \global\expandafter\def\csname utb@nav@sectitle@##1\endcsname{##4}%
+        \def\utb@tmp@short{##2}%
+        \ifx\utb@tmp@short\@empty
+          \global\expandafter\def\csname utb@nav@secshort@##1\endcsname{##4}%
+        \else
+          \global\expandafter\def\csname utb@nav@secshort@##1\endcsname{##2}%
+        \fi
+        \global\expandafter\def\csname utb@nav@secpage@##1\endcsname{##3}%
+        \ifcsname utb@nav@subcount@##1\endcsname\else
+          \global\expandafter\def\csname utb@nav@subcount@##1\endcsname{0}%
+        \fi
+        \ifnum##1>\utb@nav@totalsecs\relax
+          \xdef\utb@nav@totalsecs{##1}%
+        \fi
+      }%
+      \def\beamer@subsectionentry##1##2##3##4##5{%
+        \global\expandafter\def\csname utb@nav@subcount@##2\endcsname{##3}%
+        \global\expandafter\def\csname utb@nav@subpage@##2@##3\endcsname{##4}%
+      }%
+      \gdef\utb@nav@totalsecs{0}%
+      \dohead
+    \endgroup
+  \fi
+}
+
+\newdimen\utb@sec@w
+\newdimen\utb@bar@w
+\newdimen\utb@bar@gap
+\newdimen\utb@bar@pad
+\newdimen\utb@bar@step
+\newdimen\utb@bar@avail
+\newdimen\utb@sec@xl
+\newdimen\utb@sec@xr
+\newdimen\utb@sec@xm
+\newdimen\utb@bar@xl
+\newdimen\utb@bar@xr
+\newdimen\utb@bar@ybot
+\newdimen\utb@bar@ytop
+\newcount\utb@sec@idx
+\newcount\utb@sub@idx
+\newcount\utb@sec@total
+\newcount\utb@sub@total
+
+\newcommand{\utb@draw@subbars@active}{%
+  \ifnum\utb@sub@idx>\utb@sub@total\else
+    \setlength{\utb@bar@xl}{\dimexpr\utb@sec@xl + \utb@bar@pad + \utb@bar@step * \numexpr\utb@sub@idx - 1\relax\relax}%
+    \setlength{\utb@bar@xr}{\dimexpr\utb@bar@xl + \utb@bar@w\relax}%
+    \ifcsname utb@nav@subpage@\the\utb@sec@idx @\the\utb@sub@idx\endcsname
+      \expandafter\let\expandafter\utb@cur@subpage\csname utb@nav@subpage@\the\utb@sec@idx @\the\utb@sub@idx\endcsname
+    \else
+      \def\utb@cur@subpage{}%
+    \fi
+    \ifnum\utb@sub@idx=\c@subsection\relax
+      \fill[utbyellow] ([xshift=\utb@bar@xl, yshift=\utb@bar@ybot] current page.north west) rectangle
+        ([xshift=\utb@bar@xr, yshift=\utb@bar@ytop] current page.north west);
+    \else
+      \fill[utblightgreen] ([xshift=\utb@bar@xl, yshift=\utb@bar@ybot] current page.north west) rectangle
+        ([xshift=\utb@bar@xr, yshift=\utb@bar@ytop] current page.north west);
+    \fi
+    \ifx\utb@cur@subpage\@empty\else
+      \node[anchor=south west, inner sep=0pt, outer sep=0pt]
+        at ([xshift=\utb@bar@xl, yshift=\utb@bar@ybot] current page.north west) {%
+          \hyperlink{Navigation\utb@cur@subpage}{\phantom{\rule{\utb@bar@w}{\dimexpr\utb@bar@ytop - \utb@bar@ybot + 2.5pt\relax}}}%
+        };
+    \fi
+    \advance\utb@sub@idx by 1\relax
+    \expandafter\utb@draw@subbars@active
+  \fi
+}
+
+\newcommand{\utb@draw@subbars@inactive}{%
+  \ifnum\utb@sub@idx>\utb@sub@total\else
+    \setlength{\utb@bar@xl}{\dimexpr\utb@sec@xl + \utb@bar@pad + \utb@bar@step * \numexpr\utb@sub@idx - 1\relax\relax}%
+    \setlength{\utb@bar@xr}{\dimexpr\utb@bar@xl + \utb@bar@w\relax}%
+    \ifcsname utb@nav@subpage@\the\utb@sec@idx @\the\utb@sub@idx\endcsname
+      \expandafter\let\expandafter\utb@cur@subpage\csname utb@nav@subpage@\the\utb@sec@idx @\the\utb@sub@idx\endcsname
+    \else
+      \def\utb@cur@subpage{}%
+    \fi
+    \fill[utbgray] ([xshift=\utb@bar@xl, yshift=\utb@bar@ybot] current page.north west) rectangle
+      ([xshift=\utb@bar@xr, yshift=\utb@bar@ytop] current page.north west);
+    \ifx\utb@cur@subpage\@empty\else
+      \node[anchor=south west, inner sep=0pt, outer sep=0pt]
+        at ([xshift=\utb@bar@xl, yshift=\utb@bar@ybot] current page.north west) {%
+          \hyperlink{Navigation\utb@cur@subpage}{\phantom{\rule{\utb@bar@w}{\dimexpr\utb@bar@ytop - \utb@bar@ybot + 2.5pt\relax}}}%
+        };
+    \fi
+    \advance\utb@sub@idx by 1\relax
+    \expandafter\utb@draw@subbars@inactive
+  \fi
+}
+
+\newdimen\utb@prog@texty
+
+\newcommand{\utb@render@secloop}{%
+  \ifnum\utb@sec@idx>\utb@sec@total\else
+    \setlength{\utb@sec@xl}{\dimexpr\utb@sec@w * \numexpr\utb@sec@idx - 1\relax\relax}%
+    \setlength{\utb@sec@xr}{\dimexpr\utb@sec@w * \utb@sec@idx\relax}%
+    \setlength{\utb@sec@xm}{\dimexpr\utb@sec@xl + \utb@sec@w / 2\relax}%
+    \ifcsname utb@nav@secshort@\the\utb@sec@idx\endcsname
+      \expandafter\let\expandafter\utb@cur@stitle\csname utb@nav@secshort@\the\utb@sec@idx\endcsname
+    \else
+      \def\utb@cur@stitle{}%
+    \fi
+    \ifcsname utb@nav@secpage@\the\utb@sec@idx\endcsname
+      \expandafter\let\expandafter\utb@cur@spage\csname utb@nav@secpage@\the\utb@sec@idx\endcsname
+    \else
+      \def\utb@cur@spage{}%
+    \fi
+    \ifcsname utb@nav@subcount@\the\utb@sec@idx\endcsname
+      \utb@sub@total=\csname utb@nav@subcount@\the\utb@sec@idx\endcsname\relax
+    \else
+      \utb@sub@total=0\relax
+    \fi
+    \ifnum\utb@sec@idx=\c@section\relax
+      \fill[utbmain] ([xshift=\utb@sec@xl] current page.north west) rectangle
+        ([xshift=\utb@sec@xr, yshift=-\utb@prog@h] current page.north west);
+      \ifx\utb@cur@spage\@empty\else
+        \node[anchor=north west, inner sep=0pt, outer sep=0pt]
+          at ([xshift=\utb@sec@xl] current page.north west) {%
+            \hyperlink{Navigation\utb@cur@spage}{\phantom{\rule{\utb@sec@w}{\utb@prog@h}}}%
+          };
+      \fi
+      \node[anchor=center, inner sep=0pt, outer sep=0pt, align=center, text width=\dimexpr\utb@sec@w - 4pt\relax]
+        at ([xshift=\utb@sec@xm, yshift=\utb@prog@texty] current page.north west) {%
+          \ifx\utb@cur@spage\@empty
+            {\fontsize{6pt}{6.8pt}\linespread{0.82}\selectfont\bfseries\color{white}\utbtruncateto{\dimexpr\utb@sec@w - 4.5pt\relax}{\fontsize{6pt}{6.8pt}\selectfont\bfseries}{\utb@cur@stitle}}%
+          \else
+            \hyperlink{Navigation\utb@cur@spage}{{\fontsize{6pt}{6.8pt}\linespread{0.82}\selectfont\bfseries\color{white}\utbtruncateto{\dimexpr\utb@sec@w - 4.5pt\relax}{\fontsize{6pt}{6.8pt}\selectfont\bfseries}{\utb@cur@stitle}}}%
+          \fi
+        };
+      \ifnum\utb@sub@total>0\relax
+        \setlength{\utb@bar@pad}{4pt}%
+        \setlength{\utb@bar@gap}{2.2pt}%
+        \setlength{\utb@bar@avail}{\dimexpr\utb@sec@w - 2\utb@bar@pad - \utb@bar@gap * \numexpr\utb@sub@total - 1\relax\relax}%
+        \setlength{\utb@bar@w}{\dimexpr\utb@bar@avail / \utb@sub@total\relax}%
+        \setlength{\utb@bar@step}{\dimexpr\utb@bar@w + \utb@bar@gap\relax}%
+        \utb@sub@idx=1\relax
+        \utb@draw@subbars@active
+      \fi
+    \else
+      \fill[white] ([xshift=\utb@sec@xl] current page.north west) rectangle
+        ([xshift=\utb@sec@xr, yshift=-\utb@prog@h] current page.north west);
+      \ifx\utb@cur@spage\@empty\else
+        \node[anchor=north west, inner sep=0pt, outer sep=0pt]
+          at ([xshift=\utb@sec@xl] current page.north west) {%
+            \hyperlink{Navigation\utb@cur@spage}{\phantom{\rule{\utb@sec@w}{\utb@prog@h}}}%
+          };
+      \fi
+      \node[anchor=center, inner sep=0pt, outer sep=0pt, align=center, text width=\dimexpr\utb@sec@w - 4pt\relax]
+        at ([xshift=\utb@sec@xm, yshift=\utb@prog@texty] current page.north west) {%
+          \ifx\utb@cur@spage\@empty
+            {\fontsize{6pt}{6.8pt}\linespread{0.82}\selectfont\bfseries\color{utbblack}\utbtruncateto{\dimexpr\utb@sec@w - 4.5pt\relax}{\fontsize{6pt}{6.8pt}\selectfont\bfseries}{\utb@cur@stitle}}%
+          \else
+            \hyperlink{Navigation\utb@cur@spage}{{\fontsize{6pt}{6.8pt}\linespread{0.82}\selectfont\bfseries\color{utbblack}\utbtruncateto{\dimexpr\utb@sec@w - 4.5pt\relax}{\fontsize{6pt}{6.8pt}\selectfont\bfseries}{\utb@cur@stitle}}}%
+          \fi
+        };
+      \ifnum\utb@sub@total>0\relax
+        \setlength{\utb@bar@pad}{4pt}%
+        \setlength{\utb@bar@gap}{2.2pt}%
+        \setlength{\utb@bar@avail}{\dimexpr\utb@sec@w - 2\utb@bar@pad - \utb@bar@gap * \numexpr\utb@sub@total - 1\relax\relax}%
+        \setlength{\utb@bar@w}{\dimexpr\utb@bar@avail / \utb@sub@total\relax}%
+        \setlength{\utb@bar@step}{\dimexpr\utb@bar@w + \utb@bar@gap\relax}%
+        \utb@sub@idx=1\relax
+        \utb@draw@subbars@inactive
+      \fi
+    \fi
+    \draw[utbgrayline!40, line width=0.4pt]
+      ([xshift=\utb@sec@xr] current page.north west) --
+      ([xshift=\utb@sec@xr, yshift=-\utb@prog@h] current page.north west);
+    \advance\utb@sec@idx by 1\relax
+    \expandafter\utb@render@secloop
+  \fi
+}
+
+\newcommand{\utb@render@progressbar}{%
+  \ifnum\utb@nav@totalsecs=0\relax
+    \utb@read@nav
+  \fi
+  \utb@sec@total=\utb@nav@totalsecs\relax
+  \ifnum\utb@sec@total>0\relax
+    \setlength{\utb@sec@w}{\dimexpr\paperwidth / \utb@sec@total\relax}%
+    \setlength{\utb@prog@texty}{\dimexpr-\utb@prog@h * 4 / 10\relax}%
+    \setlength{\utb@bar@ybot}{\dimexpr-\utb@prog@h + 2pt\relax}%
+    \setlength{\utb@bar@ytop}{\dimexpr-\utb@prog@h + 3.5pt\relax}%
+    \utb@sec@idx=1\relax
+    \utb@render@secloop
+  \fi
+}
+
+\newdimen\utb@cur@progh
+\newif\ifutb@framenoprogressbar
+\utb@framenoprogressbarfalse
+
+\define@key{beamerframe}{noprogressbar}[]{\global\utb@framenoprogressbartrue}
+
+\newcommand{\utb@eval@progh}{%
+  \utb@cur@progh=0pt\relax
+  \ifx\utb@progressbar\utb@opt@on
+    \utb@cur@progh=\dimexpr\utb@prog@h\relax
+    \ifnum\c@section=0\relax
+      \utb@cur@progh=0pt\relax
+    \fi
+    \ifutb@framenoprogressbar
+      \utb@cur@progh=0pt\relax
+    \fi
+  \fi
+}
+
+%% ----------------------------------------------------------- Header / Headline
+\def\utb@hdr@pagenumber{pagenumber}
+\def\utb@hdr@logo{logo}
+\newsavebox\utb@hdr@rightbox
+\newdimen\utb@cur@bandH
+\newdimen\utb@cur@headerB
+\newdimen\utb@title@avail@w
+
+\newcommand{\utb@eval@header@dims}{%
+  \def\utb@bar@thick{thick}%
+  \ifx\utb@bar\utb@bar@thick
+    \setlength{\utb@cur@bandH}{\utb@fH{bandB}}%
+    \setlength{\utb@cur@headerB}{\utb@fH{thickB}}%
+  \else
+    \setlength{\utb@cur@bandH}{\utb@fH{bandThinB}}%
+    \setlength{\utb@cur@headerB}{\utb@fH{thinB}}%
+  \fi
+  \sbox\utb@hdr@rightbox{}%
+  \ifx\utb@headerright\utb@hdr@pagenumber
+    \ifx\utb@numbering\utb@num@none\else
+      \sbox\utb@hdr@rightbox{%
+        {\usebeamerfont{frametitle}\color{utbyellow}\strut%
+          \ifx\utb@numbering\utb@num@fraction
+            \insertframenumber/\inserttotalframenumber
+          \else
+            \insertframenumber
+          \fi
+        \strut}%
+      }%
+    \fi
+  \else\ifx\utb@headerright\utb@hdr@logo
+    \ifx\utb@headerlogo\@empty\else
+      \sbox\utb@hdr@rightbox{%
+        \includegraphics[height=\dimexpr\utb@cur@bandH - 4.5pt\relax,keepaspectratio]{\utb@headerlogo}%
+      }%
+    \fi
+  \fi\fi
+  \ifdim\wd\utb@hdr@rightbox>0pt\relax
+    \setlength{\utb@title@avail@w}{\dimexpr\paperwidth - 2\utb@fW{mL} - \wd\utb@hdr@rightbox - 0.8em\relax}%
+  \else
+    \setlength{\utb@title@avail@w}{\dimexpr\paperwidth - 2\utb@fW{mL}\relax}%
+  \fi
+}
+
+\defbeamertemplate*{headline}{UTB}{%
+  \leavevmode%
+  \utb@eval@progh
+  \utb@eval@header@dims
+  \begin{tikzpicture}[remember picture, overlay]
+    \ifx\utb@framebg\utb@opt@on
+      \utb@resolve@diagimg
+      \def\utb@cur@framebgh{%
+        \ifx\utb@framebg@height\utb@val@auto
+          \ifutb@wide 0.26\paperheight\else 0.24\paperheight\fi
+        \else
+          \utb@framebg@height
+        \fi
+      }%
+      \node[inner sep=0pt, outer sep=0pt, anchor=south east, opacity=\utb@framebg@opacity]
+        at ([xshift=0pt, yshift=-\dimexpr\utb@fH{footY} - 1.5pt\relax] current page.north east) {%
+          \includegraphics[height=\utb@cur@framebgh,keepaspectratio]{\utb@diag@img}%
+        };
+    \fi
+    \ifdim\utb@cur@progh>0pt\relax
+      \utb@render@progressbar
+    \fi
+    \def\utb@bar@thick{thick}%
+    \ifx\utb@bar\utb@bar@thick
+      \fill[utbmain] ([yshift=-\utb@cur@progh] current page.north west) rectangle
+        ([yshift=-\dimexpr\utb@fH{bandB} + \utb@cur@progh\relax] current page.north east);
+      \fill[utbaccent] ([yshift=-\dimexpr\utb@fH{bandB} + \utb@cur@progh\relax] current page.north west) rectangle
+        ([yshift=-\dimexpr\utb@fH{thickB} + \utb@cur@progh\relax] current page.north east);
+    \else
+      \fill[utbmain] ([yshift=-\utb@cur@progh] current page.north west) rectangle
+        ([yshift=-\dimexpr\utb@fH{bandThinB} + \utb@cur@progh\relax] current page.north east);
+      \fill[utbaccent] ([yshift=-\dimexpr\utb@fH{ruleT} + \utb@cur@progh\relax] current page.north west) rectangle
+        ([yshift=-\dimexpr\utb@fH{thinB} + \utb@cur@progh\relax] current page.north east);
+    \fi
+    \ifdim\wd\utb@hdr@rightbox>0pt\relax
+      \node[anchor=east, inner sep=0pt, outer sep=0pt]
+        at ([xshift=-\utb@fW{mL}, yshift=\dimexpr -\utb@cur@progh - \utb@cur@bandH/2\relax] current page.north east) {%
+          \usebox\utb@hdr@rightbox
+        };
+    \fi
+  \end{tikzpicture}%
+}
+
+\newcommand{\utb@check@hassub}{%
+  \gdef\utb@hassub{0}%
+  \begingroup
+    \setbox\z@=\hbox{\normalfont\insertframesubtitle}%
+    \ifdim\wd\z@>0pt\relax
+      \protected@edef\utb@cur@sub{\insertframesubtitle}%
+      \ifdefstring{\utb@cur@sub}{Hidden}{}{%
+        \ifdefstring{\utb@cur@sub}{hidden}{}{%
+          \ifdefstring{\utb@cur@sub}{none}{}{%
+            \gdef\utb@hassub{1}%
+          }%
+        }%
+      }%
+    \fi
+  \endgroup
+}
+
+%% ----------------------------------------------------------------- Frametitle
+\defbeamertemplate*{frametitle}{UTB}[1][left]{%
+  \nointerlineskip%
+  \utb@eval@progh
+  \utb@eval@header@dims
+  \utb@check@hassub
+  \def\utb@bar@thick{thick}%
+  \ifx\utb@bar\utb@bar@thick
+    \vskip\dimexpr\utb@fH{thickB} + \utb@cur@progh + 0.3em\relax%
+  \else
+    \vskip\dimexpr\utb@fH{thinB} + \utb@cur@progh + 0.4em\relax%
+  \fi
+  \begin{tikzpicture}[remember picture, overlay]
+    \def\utb@bar@thick{thick}%
+    \ifx\utb@bar\utb@bar@thick
+      \node[anchor=west, inner sep=0pt, outer sep=0pt]
+        at ([xshift=\utb@fW{mL}, yshift=\dimexpr -\utb@cur@progh - \utb@fH{bandB}/2\relax] current page.north west) {%
+          \parbox{\utb@title@avail@w}{\usebeamerfont{frametitle}\color{white}\raggedright\strut\utbtruncateto{\utb@title@avail@w}{\usebeamerfont{frametitle}}{\insertframetitle}\strut}%
+        };
+      \ifnum\utb@hassub=1\relax
+        \node[anchor=west, inner sep=0pt, outer sep=0pt]
+          at ([xshift=\utb@fW{mL}, yshift=\dimexpr -\utb@cur@progh - (\utb@fH{bandB} + \utb@fH{thickB})/2\relax] current page.north west) {%
+            \parbox{\dimexpr\paperwidth - 2\utb@fW{mL}\relax}{\usebeamerfont{framesubtitle}\color{white}\spaceskip=0.8\fontdimen2\font\raggedright\strut\utbtruncateto{\dimexpr\paperwidth - 2\utb@fW{mL}\relax}{\usebeamerfont{framesubtitle}}{\insertframesubtitle}\strut}%
+          };
+      \fi
+    \else
+      \ifnum\utb@hassub=0\relax
+        \node[anchor=west, inner sep=0pt, outer sep=0pt]
+          at ([xshift=\utb@fW{mL}, yshift=\dimexpr -\utb@cur@progh - \utb@fH{bandThinB}/2\relax] current page.north west) {%
+            \parbox{\utb@title@avail@w}{\usebeamerfont{frametitle}\color{white}\raggedright\strut\utbtruncateto{\utb@title@avail@w}{\usebeamerfont{frametitle}}{\insertframetitle}\strut}%
+          };
+      \else
+        \node[anchor=west, inner sep=0pt, outer sep=0pt]
+          at ([xshift=\utb@fW{mL}, yshift=\dimexpr -\utb@cur@progh - \utb@fH{bandThinB}/2\relax] current page.north west) {%
+            \parbox{\utb@title@avail@w}{%
+              {\usebeamerfont{frametitle}\color{white}\raggedright\strut\utbtruncateto{\utb@title@avail@w}{\usebeamerfont{frametitle}}{\insertframetitle}\strut\par}%
+              \nointerlineskip\vskip 1.5pt%
+              {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\spaceskip=0.8\fontdimen2\font\raggedright\strut\utbtruncateto{\utb@title@avail@w}{\usebeamerfont{framesubtitle}}{\insertframesubtitle}\strut\par}%
+            }%
+          };
+      \fi
+    \fi
+  \end{tikzpicture}%
+}
+
+%% ----------------------------------------------------------- Footer / Footline
+\def\utb@logo@full{full}
+\def\utb@logo@mark{mark}
+\def\utb@logo@wordmark{wordmark}
+\def\utb@logo@utb{utb}
+\def\utb@logo@hust{utb}
+\def\utb@logo@none{none}
+
+\def\utb@num@none{none}
+\def\utb@num@plain{plain}
+\def\utb@num@fraction{fraction}
+
+\defbeamertemplate*{footline}{UTB}{%
+  \leavevmode%
+  \begin{tikzpicture}[remember picture, overlay]
+    \def\utb@fimg{}%
+    \def\utb@lw{0pt}%
+    \def\utb@lgap{0pt}%
+    \ifx\utb@flogo\utb@logo@full
+      \def\utb@fimg{footer-full-utb.png}%
+      \def\utb@lw{\utb@fW{fullW}}%
+      \def\utb@lgap{\utb@fW{gapfull}}%
+    \else\ifx\utb@flogo\utb@logo@mark
+      \def\utb@fimg{footer-mark-utb.png}%
+      \def\utb@lw{\utb@fW{markW}}%
+      \def\utb@lgap{\utb@fW{gapmark}}%
+    \else\ifx\utb@flogo\utb@logo@wordmark
+      \def\utb@fimg{footer-utb.png}%
+      \def\utb@lw{\utb@fW{wordmarkW}}%
+      \def\utb@lgap{\utb@fW{gapwordmark}}%
+    \else\ifx\utb@flogo\utb@logo@utb
+      \def\utb@fimg{footer-utb.png}%
+      \def\utb@lw{\utb@fW{utbW}}%
+      \def\utb@lgap{\utb@fW{gaputb}}%
+    \fi\fi\fi\fi
+
+    \ifx\utb@fimg\@empty\else
+      \node[inner sep=0pt, outer sep=0pt, anchor=west]
+        at ([xshift=\utb@fW{footX}, yshift=-\utb@fH{footY}] current page.north west) {%
+        \includegraphics[width=\utb@lw]{\utb@fimg}%
+      };
+    \fi
+
+    \ifnum\c@utb@slide@citecount=0\relax
+      \ifutb@footermeta
+        \def\utb@show@footnum{1}%
+        \ifx\utb@numbering\utb@num@none
+          \def\utb@show@footnum{0}%
+        \fi
+        \ifx\utb@headerright\utb@hdr@pagenumber
+          \def\utb@show@footnum{0}%
+        \fi
+        \ifnum\utb@show@footnum=0\relax
+          \node[anchor=south east, inner sep=0pt, outer sep=0pt] (utbdate)
+            at ([xshift=\utb@fW{footXend}, yshift=-\utb@fH{numY}] current page.north west) {%
+            {\usebeamerfont{footermeta}\color{utbmain}\strut\utb@cur@footerdate}%
+          };
+        \else
+          \node[anchor=south east, inner sep=0pt, outer sep=0pt] (utbpagenum)
+            at ([xshift=\utb@fW{numR}, yshift=-\utb@fH{numY}] current page.north west) {%
+            {\usebeamerfont{page number in head/foot}\color{utbmain}\strut%
+              \ifx\utb@numbering\utb@num@fraction
+                \insertframenumber\,/\,\inserttotalframenumber
+              \else
+                \insertframenumber
+              \fi
+            }%
+          };
+          \node[anchor=south east, inner sep=0pt, outer sep=0pt] (utbdate)
+            at ([xshift=-1.5em] utbpagenum.south west) {%
+            {\usebeamerfont{footermeta}\color{utbmain}\strut\utb@cur@footerdate}%
+          };
+        \fi
+        \node[anchor=south west, inner sep=0pt, outer sep=0pt] (utbauthor)
+          at ([xshift=\dimexpr\utb@fW{footX} + \utb@lw + \utb@lgap\relax, yshift=-\utb@fH{numY}] current page.north west) {%
+          {\usebeamerfont{footermeta}\color{utbmain}\strut\utb@cur@footerauthor}%
+        };
+        \path let \p1 = (utbauthor.south east),
+                  \p2 = (utbdate.south west),
+                  \n1 = {\x2 - \x1 - 2.0em} in
+          node[anchor=south, inner sep=0pt, outer sep=0pt] (utbtitle) at ({(\x1+\x2)/2}, \y1) {%
+            \parbox[b]{\n1}{%
+              \centering\usebeamerfont{footermeta}\color{utbmain}\strut%
+              \utb@cur@footertitle\strut
+            }%
+          };
+        \path let \p1 = ([yshift=3.5pt] utbtitle.north),
+                  \p2 = ([yshift=-\utb@fH{footY}] current page.north west),
+                  \n2 = {max(\y1, \y2)} in
+          coordinate (actualRuleY) at (0pt, \n2);
+        \draw[utbaccent, line width=\utb@fH{footLineH}]
+          ([xshift=\dimexpr\utb@fW{footX} + \utb@lw + \utb@lgap\relax] current page.north west |- actualRuleY) --
+          ([xshift=\utb@fW{footXend}] current page.north west |- actualRuleY);
+      \fi
+      \ifutb@footermeta\else
+        \draw[utbaccent, line width=\utb@fH{footLineH}]
+          ([xshift=\dimexpr\utb@fW{footX} + \utb@lw + \utb@lgap\relax, yshift=-\utb@fH{footY}] current page.north west) --
+          ([xshift=\utb@fW{footXend}, yshift=-\utb@fH{footY}] current page.north west);
+        \ifx\utb@footertext\@empty\else
+          \node[anchor=south west, inner sep=0pt, outer sep=0pt]
+            at ([xshift=\dimexpr\utb@fW{footX} + \utb@lw + \utb@lgap\relax, yshift=\dimexpr-\utb@fH{footY} + 2pt\relax] current page.north west) {%
+            {\usebeamerfont{footer}\color{utbblack}\utb@footertext}%
+          };
+        \fi
+      \fi
+    \fi
+    \ifnum\c@utb@slide@citecount>0\relax
+      \utb@build@slide@citebox
+    \fi
+    \ifnum\utb@cite@rows=1\relax
+      \draw[utbaccent, line width=\utb@fH{footLineH}]
+        ([xshift=\dimexpr\utb@fW{footX} + \utb@lw + \utb@lgap\relax, yshift=-\utb@fH{footY}] current page.north west) --
+        ([xshift=\utb@fW{footXend}, yshift=-\utb@fH{footY}] current page.north west);
+      \node[anchor=north west, inner sep=0pt, outer sep=0pt]
+        at ([xshift=\dimexpr\utb@fW{footX} + \utb@lw + \utb@lgap\relax, yshift=\dimexpr-\utb@fH{footY} - 2pt\relax] current page.north west) {%
+          \copy\utb@slide@citebox
+        };
+    \fi
+    \ifnum\utb@cite@rows>1\relax
+      \node[anchor=south west, inner sep=0pt, outer sep=0pt] (utbcites)
+        at ([xshift=\dimexpr\utb@fW{footX} + \utb@lw + \utb@lgap\relax, yshift=-\utb@fH{numY}] current page.north west) {%
+          \copy\utb@slide@citebox
+        };
+      \coordinate (citeruleL) at ([yshift=3pt] utbcites.north west);
+      \draw[utbaccent, line width=\utb@fH{footLineH}]
+        (citeruleL) -- ([xshift=\utb@fW{footXend}] current page.north west |- citeruleL);
+    \fi
+
+    \ifx\utb@headerright\utb@hdr@pagenumber\else
+      \ifutb@footermeta
+        \ifnum\c@utb@slide@citecount>0\relax
+          \ifx\utb@numbering\utb@num@none\else
+            \node[anchor=east, inner sep=0pt, outer sep=0pt]
+              at ([xshift=\utb@fW{numR}, yshift=-\utb@fH{numY}] current page.north west) {%
+              {\usebeamerfont{page number in head/foot}\color{utbmain}%
+                \ifx\utb@numbering\utb@num@fraction
+                  \insertframenumber\,/\,\inserttotalframenumber
+                \else
+                  \insertframenumber
+                \fi
+              }%
+            };
+          \fi
+        \fi
+      \else
+        \ifx\utb@numbering\utb@num@none\else
+          \node[anchor=east, inner sep=0pt, outer sep=0pt]
+            at ([xshift=\utb@fW{numR}, yshift=-\utb@fH{numY}] current page.north west) {%
+            {\usebeamerfont{page number in head/foot}\color{utbmain}%
+              \ifx\utb@numbering\utb@num@fraction
+                \insertframenumber\,/\,\inserttotalframenumber
+              \else
+                \insertframenumber
+              \fi
+            }%
+          };
+        \fi
+      \fi
+    \fi
+  \end{tikzpicture}%
+  \vskip\dimexpr\paperheight - \utb@fH{bodyBot}\relax%
+  \global\setbox\utb@slide@citebox=\box\voidb@x%
+  \global\c@utb@slide@citecount=0\relax%
+  \gdef\utb@cite@rows{0}%
+  \global\c@footnote=0\relax%
+}
+
+%% ----------------------------------------------------------- Footnote & Citation Slot
+\newbox\utb@slide@citebox
+\newbox\utb@tmp@cbox
+\newbox\utb@citebox@one@i
+\newbox\utb@citebox@one@ii
+\newbox\utb@citebox@one@iii
+\newbox\utb@citebox@one@iv
+\newbox\utb@citebox@one@v
+\newbox\utb@citebox@one@vi
+\newbox\utb@citebox@one@vii
+\newbox\utb@citebox@one@viii
+\newbox\utb@citebox@two@i
+\newbox\utb@citebox@two@ii
+\newbox\utb@citebox@two@iii
+\newbox\utb@citebox@two@iv
+\newbox\utb@citebox@two@v
+\newbox\utb@citebox@two@vi
+\newbox\utb@citebox@two@vii
+\newbox\utb@citebox@two@viii
+\newcounter{utb@slide@citecount}
+\newcounter{utbnotecnt}
+\global\c@utb@slide@citecount=0\relax
+\global\c@utbnotecnt=0\relax
+\def\utb@cite@rows{0}
+\newif\ifutb@use@twocol
+
+\BeforeBeginEnvironment{frame}{%
+  \global\setbox\utb@slide@citebox=\box\voidb@x%
+  \global\c@utb@slide@citecount=0\relax%
+  \gdef\utb@cite@rows{0}%
+  \global\c@footnote=0\relax%
+  \global\c@utbnotecnt=0\relax%
+  \global\utb@framenoprogressbarfalse%
+}
+
+\newdimen\utb@footcite@left
+\newdimen\utb@cite@onecol@w
+\newdimen\utb@cite@twocol@w
+\newcommand{\utb@update@footcite@left}{%
+  \def\utb@cur@lw{0pt}%
+  \def\utb@cur@lgap{0pt}%
+  \ifx\utb@flogo\utb@logo@full
+    \def\utb@cur@lw{\utb@fW{fullW}}%
+    \def\utb@cur@lgap{\utb@fW{gapfull}}%
+  \else\ifx\utb@flogo\utb@logo@mark
+    \def\utb@cur@lw{\utb@fW{markW}}%
+    \def\utb@cur@lgap{\utb@fW{gapmark}}%
+  \else\ifx\utb@flogo\utb@logo@wordmark
+    \def\utb@cur@lw{\utb@fW{wordmarkW}}%
+    \def\utb@cur@lgap{\utb@fW{gapwordmark}}%
+  \else\ifx\utb@flogo\utb@logo@utb
+    \def\utb@cur@lw{\utb@fW{utbW}}%
+    \def\utb@cur@lgap{\utb@fW{gaputb}}%
+  \fi\fi\fi\fi
+  \ifdim\utb@cur@lw>0pt
+    \setlength{\utb@footcite@left}{\dimexpr\utb@fW{footX} + \utb@cur@lw + \utb@cur@lgap - \utb@fW{mL}\relax}%
+    \ifdim\utb@footcite@left<0pt\setlength{\utb@footcite@left}{0pt}\fi
+  \else
+    \setlength{\utb@footcite@left}{0pt}%
+  \fi
+  \ifx\utb@headerright\utb@hdr@pagenumber
+    \setlength{\utb@cite@onecol@w}{\dimexpr\utb@fW{footXend} - (\utb@fW{footX} + \utb@cur@lw + \utb@cur@lgap)\relax}%
+  \else
+    \setlength{\utb@cite@onecol@w}{\dimexpr\paperwidth - (\utb@fW{footX} + \utb@cur@lw + \utb@cur@lgap) - 0.07\paperwidth\relax}%
+  \fi
+  \setlength{\utb@cite@twocol@w}{\dimexpr 0.485\utb@cite@onecol@w\relax}%
+}
+
+\renewcommand{\footnoterule}{}
+
+\setbeamercolor{footnote}{fg=utbblack}
+\setbeamercolor{footnote mark}{fg=utbmain}
+
+\newcommand{\utb@make@notebox}[4]{%
+  \sbox\utb@tmp@cbox{%
+    \usebeamerfont{footnote}\selectfont\strut%
+    {\color{#1}\usebeamerfont*{footnote mark}\textsuperscript{#2}}\,%
+    {\usebeamercolor[fg]{footnote}\utbtruncate{#3}{#4}}\strut%
+  }%
+}
+
+\newcommand{\utb@add@raw@footeritem}[3]{%
+  \global\advance\c@utb@slide@citecount by 1\relax%
+  \utb@update@footcite@left%
+  \ifnum\c@utb@slide@citecount<9\relax
+    \edef\utb@cur@slot{\romannumeral\c@utb@slide@citecount}%
+    \ifnum\utb@citemax=-1\relax
+      \utb@make@notebox{#1}{#2}{-1}{#3}%
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@onecol@w
+        \sbox\utb@tmp@cbox{\resizebox{\utb@cite@onecol@w}{\height}{\usebox\utb@tmp@cbox}}%
+      \fi
+    \else
+      \utb@make@notebox{#1}{#2}{115}{#3}%
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@onecol@w \utb@make@notebox{#1}{#2}{90}{#3}\fi
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@onecol@w \utb@make@notebox{#1}{#2}{72}{#3}\fi
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@onecol@w \utb@make@notebox{#1}{#2}{56}{#3}\fi
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@onecol@w \utb@make@notebox{#1}{#2}{42}{#3}\fi
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@onecol@w
+        \sbox\utb@tmp@cbox{\resizebox{\utb@cite@onecol@w}{\height}{\usebox\utb@tmp@cbox}}%
+      \fi
+    \fi
+    \global\setbox\csname utb@citebox@one@\utb@cur@slot\endcsname=\hbox{\unhbox\utb@tmp@cbox}%
+    \ifnum\utb@citemax=-1\relax
+      \utb@make@notebox{#1}{#2}{-1}{#3}%
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@twocol@w
+        \sbox\utb@tmp@cbox{\resizebox{\utb@cite@twocol@w}{\height}{\usebox\utb@tmp@cbox}}%
+      \fi
+    \else
+      \utb@make@notebox{#1}{#2}{52}{#3}%
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@twocol@w \utb@make@notebox{#1}{#2}{40}{#3}\fi
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@twocol@w \utb@make@notebox{#1}{#2}{30}{#3}\fi
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@twocol@w \utb@make@notebox{#1}{#2}{22}{#3}\fi
+      \ifdim\wd\utb@tmp@cbox>\utb@cite@twocol@w
+        \sbox\utb@tmp@cbox{\resizebox{\utb@cite@twocol@w}{\height}{\usebox\utb@tmp@cbox}}%
+      \fi
+    \fi
+    \global\setbox\csname utb@citebox@two@\utb@cur@slot\endcsname=\hbox{\unhbox\utb@tmp@cbox}%
+  \fi
+}
+
+\newcommand{\utb@build@slide@citebox}{%
+  \global\setbox\utb@slide@citebox=\box\voidb@x%
+  \gdef\utb@cite@rows{0}%
+  \ifnum\c@utb@slide@citecount>0\relax
+    \utb@update@footcite@left%
+    \count@=\c@utb@slide@citecount\relax
+    \ifnum\count@>\utb@citemax\relax \count@=\utb@citemax\relax \fi
+    \ifnum\count@>8\relax \count@=8\relax \fi
+    \edef\utb@eff@citecount{\the\count@}%
+    \utb@use@twocolfalse
+    \def\utb@tmp@ccol{2}%
+    \ifx\utb@citecolumns\utb@tmp@ccol
+      \ifnum\utb@eff@citecount>1\relax \utb@use@twocoltrue \fi
+    \else
+      \def\utb@tmp@ccol{auto}%
+      \ifx\utb@citecolumns\utb@tmp@ccol
+        \ifnum\utb@eff@citecount>\utb@citemaxlines\relax \utb@use@twocoltrue \fi
+      \fi
+    \fi
+    \ifutb@use@twocol
+      \count@=\numexpr\utb@eff@citecount + 1\relax
+      \divide\count@ by 2\relax
+      \ifnum\count@>\utb@citemaxlines\relax \count@=\utb@citemaxlines\relax \fi
+      \ifnum\count@>4\relax \count@=4\relax \fi
+      \xdef\utb@cite@rows{\the\count@}%
+      \global\setbox\utb@slide@citebox=\vbox{%
+        \count255=1\relax
+        \loop
+          \hbox to \utb@cite@onecol@w{%
+            \hbox to \utb@cite@twocol@w{\unhcopy\csname utb@citebox@two@\romannumeral\count255\endcsname\hss}%
+            \hfill
+            \count@=\numexpr\count255 + \utb@cite@rows\relax
+            \unless\ifnum\count@>\utb@eff@citecount\relax
+              \hbox to \utb@cite@twocol@w{\unhcopy\csname utb@citebox@two@\romannumeral\count@\endcsname\hss}%
+            \else
+              \hbox to \utb@cite@twocol@w{\hss}%
+            \fi
+          }%
+          \ifnum\count255<\utb@cite@rows\relax
+            \vskip 0.8pt%
+          \fi
+          \advance\count255 by 1\relax
+        \unless\ifnum\count255>\utb@cite@rows\relax \repeat
+      }%
+    \else
+      \count@=\utb@eff@citecount\relax
+      \ifnum\count@>\utb@citemaxlines\relax \count@=\utb@citemaxlines\relax \fi
+      \ifnum\count@>4\relax \count@=4\relax \fi
+      \xdef\utb@cite@rows{\the\count@}%
+      \global\setbox\utb@slide@citebox=\vbox{%
+        \count255=1\relax
+        \loop
+          \hbox to \utb@cite@onecol@w{\unhcopy\csname utb@citebox@one@\romannumeral\count255\endcsname\hss}%
+          \ifnum\count255<\utb@cite@rows\relax
+            \vskip 0.8pt%
+          \fi
+          \advance\count255 by 1\relax
+        \unless\ifnum\count255>\utb@cite@rows\relax \repeat
+      }%
+    \fi
+  \fi
+}
+
+\renewcommand<>\beamer@framefootnotetext[1]{%
+  \utb@add@raw@footeritem{utbmain}{\thefootnote}{#1}%
+}
+\let\@mpfootnotetext\beamer@framefootnotetext
+
+%% ------------------------------------------------ Custom \note command
+\newcommand{\utbnote}[2]{%
+  \global\advance\c@utbnotecnt by 1\relax%
+  #1{\color{utbaccent}\usebeamerfont*{footnote mark}\textsuperscript{\alph{utbnotecnt}}}%
+  \utb@add@raw@footeritem{utbaccent}{\alph{utbnotecnt}}{#2}%
+}
+\let\hustnote\utbnote
+\let\note\utbnote
+
+%% ------------------------------------------------ Convenience full-slide backgrounds
+\def\utb@opt@on{on}
+\def\utb@opt@off{off}
+
+\define@key{utbwelcome}{bg}{\def\utb@wf@bg{#1}}
+\define@key{utbwelcome}{footer}{\def\utb@wf@footer{#1}}
+\define@key{utbwelcome}{slogan}{\def\utb@wf@footer{#1}}
+
+\newcommand{\utbwelcomebackground}[1][]{%
+  \def\utb@wf@bg{dark}%
+  \def\utb@wf@footer{\utb@slogantext}%
+  \setkeys{utbwelcome}{#1}%
+  \setbeamertemplate{headline}{}%
+  \setbeamertemplate{footline}{}%
+  \def\utb@wf@bg@dark{dark}%
+  \ifx\utb@wf@bg\utb@wf@bg@dark
+    \usebackgroundtemplate{%
+      \includegraphics[width=\paperwidth,height=\paperheight]{bg-dark-\utb@colname-\ifutb@wide 169\else 43\fi}%
+    }%
+  \else
+    \usebackgroundtemplate{%
+      \includegraphics[width=\paperwidth,height=\paperheight]{bg-background-\utb@colname-\ifutb@wide 169\else 43\fi}%
+    }%
+  \fi
+}
+
+\newcommand{\utbdarkbackground}{%
+  \setbeamertemplate{headline}{}%
+  \setbeamertemplate{footline}{}%
+  \usebackgroundtemplate{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{bg-dark-\utb@colname-\ifutb@wide 169\else 43\fi}%
+  }%
+}
+
+\newcommand{\utbwordmarkbackground}{%
+  \utbwelcomebackground%
+}
+
+\newcommand{\utbbackgroundbackground}{%
+  \setbeamertemplate{headline}{}%
+  \setbeamertemplate{footline}{}%
+  \usebackgroundtemplate{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{bg-background-\utb@colname-\ifutb@wide 169\else 43\fi}%
+  }%
+}
+
+\newenvironment{utbwelcomeframe}[1][]{%
+  \def\utb@wf@bg{dark}%
+  \def\utb@wf@footer{\utb@slogantext}%
+  \setkeys{utbwelcome}{#1}%
+  \utbwelcomebackground[#1]%
+  \begin{frame}[environment=utbwelcomeframe,plain,noframenumbering]%
+    \leavevmode%
+    \begin{tikzpicture}[remember picture, overlay]
+      \def\utb@wf@bg@dark{dark}%
+      \ifx\utb@wordmark\utb@opt@on
+        \ifx\utb@wf@bg\utb@wf@bg@dark
+          \node[inner sep=0pt, outer sep=0pt, anchor=center] at (current page.center) {%
+            \utbwordmarklockup[image=footer-utb-white.png, color=white, height=0.11\paperheight]%
+          };
+        \else
+          \node[inner sep=0pt, outer sep=0pt, anchor=center] at (current page.center) {%
+            \utbwordmarklockup[image=footer-utb.png, color=utbmain, height=0.11\paperheight]%
+          };
+        \fi
+      \fi
+      \ifx\utb@wf@footer\@empty\else
+        \ifx\utb@slogan\utb@opt@on
+          \node[inner sep=0pt, outer sep=0pt, anchor=south] at ([yshift=0.08\paperheight] current page.south) {%
+            \ifx\utb@wf@bg\utb@wf@bg@dark
+              {\usebeamerfont{slogan}\color{white}\utb@wf@footer}%
+            \else
+              {\usebeamerfont{slogan}\color{utbmain}\utb@wf@footer}%
+            \fi
+          };
+        \fi
+      \fi
+    \end{tikzpicture}%
+}{%
+  \end{frame}%
+  \setbeamertemplate{headline}[UTB]%
+  \setbeamertemplate{footline}[UTB]%
+  \usebackgroundtemplate{}%
+}
+
+\newenvironment{utbdarkframe}[1][]{%
+  \utbdarkbackground%
+  \begin{frame}[environment=utbdarkframe,plain,noframenumbering,#1]%
+}{%
+  \end{frame}%
+  \setbeamertemplate{headline}[UTB]%
+  \setbeamertemplate{footline}[UTB]%
+  \usebackgroundtemplate{}%
+}
+
+\newenvironment{utbwordmarkframe}[1][]{%
+  \utbwelcomeframe[#1]%
+}{%
+  \endutbwelcomeframe%
+}
+
+\newenvironment{utbbackgroundframe}[1][]{%
+  \utbbackgroundbackground%
+  \begin{frame}[environment=utbbackgroundframe,plain,noframenumbering,#1]%
+}{%
+  \end{frame}%
+  \setbeamertemplate{headline}[UTB]%
+  \setbeamertemplate{footline}[UTB]%
+  \usebackgroundtemplate{}%
+}
+
+%% Backward compatibility aliases
+\let\hustwelcomebackground\utbwelcomebackground
+\let\hustdarkbackground\utbdarkbackground
+\let\hustwordmarkbackground\utbwordmarkbackground
+\let\hustbackgroundbackground\utbbackgroundbackground
+\let\hustwelcomeframe\utbwelcomeframe
+\let\endhustwelcomeframe\endutbwelcomeframe
+\let\hustdarkframe\utbdarkframe
+\let\endhustdarkframe\endutbdarkframe
+\let\hustwordmarkframe\utbwordmarkframe
+\let\endhustwordmarkframe\endutbwordmarkframe
+\let\hustbackgroundframe\utbbackgroundframe
+\let\endhustbackgroundframe\endutbbackgroundframe
+
+\mode<all>
+\endinput

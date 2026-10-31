@@ -1,0 +1,379 @@
+%% beamerinnerthemeUTB.sty -- Inner elements: title page, lists, blocks for UTB theme
+%% Trường Đại học Tây Bắc (UTB)
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerinnerthemeUTB}[2026/10/31 UTB Beamer inner theme]
+
+\mode<presentation>
+
+\RequirePackage{tikz}
+
+%% ------------------------------------------------------------- Lists
+\setbeamertemplate{itemize item}{\raisebox{0.2ex}{\tiny\textcolor{utbaccent}{$\blacksquare$}}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.2ex}{\tiny\textcolor{utbmain}{$\blacktriangleright$}}}
+\setbeamertemplate{itemize subsubitem}{\raisebox{0.2ex}{\tiny\textcolor{utbaccent}{$\bullet$}}}
+
+\setbeamertemplate{enumerate item}{\small\bfseries\insertenumlabel.}
+\setbeamertemplate{enumerate subitem}{\footnotesize\bfseries\insertenumlabel.\insertsubenumlabel}
+
+%% ------------------------------------------------------------- Blocks
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+%% ------------------------------------------------------------- Title Page
+\def\utb@titlepage@cover{cover}
+\def\utb@titlepage@dark{dark}
+\def\utb@titlepage@welcome{welcome}
+\def\utb@coverbg@light{light}
+\def\utb@coverbg@solid{solid}
+\def\utb@opt@on{on}
+\def\utb@opt@off{off}
+\def\utb@mode@image{image}
+
+\defbeamertemplate*{title page}{UTB}[1][]{%
+  \ifx\utb@titlepage\utb@titlepage@welcome
+    %% ----------------------- 1. Welcome Screen
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[inner sep=0pt, outer sep=0pt, anchor=center] at (current page.center) {%
+        \includegraphics[width=\paperwidth,height=\paperheight]{bg-dark-\utb@colname-\ifutb@wide 169\else 43\fi}%
+      };
+      \ifx\utb@wordmark\utb@opt@on
+        \node[inner sep=0pt, outer sep=0pt, anchor=center] at (current page.center) {%
+          \utbwordmarklockup[image=footer-utb-white.png, color=white, height=0.11\paperheight]%
+        };
+      \fi
+      \ifx\utb@slogan\utb@opt@on
+        \node[inner sep=0pt, outer sep=0pt, anchor=south] at ([yshift=0.08\paperheight] current page.south) {%
+          {\usebeamerfont{slogan}\color{white}\utb@slogantext}%
+        };
+      \fi
+    \end{tikzpicture}
+  \else\ifx\utb@titlepage\utb@titlepage@dark
+    %% ----------------------- 2. Dark Title Page
+    \begin{tikzpicture}[remember picture, overlay]
+      \node[inner sep=0pt, outer sep=0pt, anchor=center] at (current page.center) {%
+        \includegraphics[width=\paperwidth,height=\paperheight]{bg-dark-\utb@colname-\ifutb@wide 169\else 43\fi}%
+      };
+      \node[anchor=center, text width=0.58\paperwidth, align=center] at (current page.center) {%
+        {\usebeamerfont{title}\color{white}\MakeUppercase{\inserttitle}\par}%
+        \ifx\insertsubtitle\@empty\else
+          \vspace{0.4em}%
+          {\usebeamerfont{subtitle}\color{white!85}\insertsubtitle\par}%
+        \fi
+        \vspace{1.0em}%
+        {\usebeamerfont{author}\color{white!95}\insertauthor\par}%
+        \ifx\insertinstitute\@empty\else
+          \vspace{0.2em}%
+          {\usebeamerfont{institute}\color{white!80}\insertinstitute\par}%
+        \fi
+        \ifx\insertdate\@empty\else
+          \vspace{0.2em}%
+          {\usebeamerfont{date}\color{white!75}\insertdate\par}%
+        \fi
+      };
+      \ifx\utb@slogan\utb@opt@on
+        \node[inner sep=0pt, outer sep=0pt, anchor=south] at ([yshift=0.06\paperheight] current page.south) {%
+          {\usebeamerfont{slogan}\color{white!80}\utb@slogantext}%
+        };
+      \fi
+    \end{tikzpicture}
+  \else%
+    %% ----------------------- 3. Cover Page (cover / solid / light)
+    \if\relax\detokenize\expandafter{\utb@logotwoimage}\relax%
+      \def\utb@has@logotwo{0}%
+    \else%
+      \ifx\utb@logotwoimage\utb@opt@off%
+        \def\utb@has@logotwo{0}%
+      \else%
+        \def\utb@has@logotwo{1}%
+      \fi%
+    \fi%
+    \def\utb@covh{\ifnum\utb@has@logotwo=1 0.82\dimexpr\utb@fH{coverLogoH}\relax\else\utb@fH{coverLogoH}\fi}%
+    \ifx\utb@coverbg\utb@coverbg@solid
+      \sbox\utb@box{%
+        \if\relax\detokenize\expandafter{\utb@logounit}\relax%
+          \utblogo[height=\utb@covh, layout=\utb@logolayout, dark]%
+        \else%
+          \utblogo[height=\utb@covh, unit=\utb@logounit, layout=\utb@logolayout, dark]%
+        \fi%
+      }%
+      \ifnum\utb@has@logotwo=1%
+        \sbox\utb@boxb{%
+          \utblogo[image=\utb@logotwoimage,
+                    height=\utb@covh,
+                    layout=\utb@logotwolayout,
+                    vn=\utb@logotwovn,
+                    en=\utb@logotwoen,
+                    color=white,
+                    equalwidth=false]%
+        }%
+      \fi%
+    \else
+      \sbox\utb@box{%
+        \ifx\utb@logomode\utb@mode@image%
+          \includegraphics[width=\utb@fW{coverLogoW}]{logo-full-utb.png}%
+        \else%
+          \if\relax\detokenize\expandafter{\utb@logounit}\relax%
+            \utblogo[height=\utb@covh, layout=\utb@logolayout]%
+          \else%
+            \utblogo[height=\utb@covh, unit=\utb@logounit, layout=\utb@logolayout]%
+          \fi%
+        \fi%
+      }%
+      \ifnum\utb@has@logotwo=1%
+        \sbox\utb@boxb{%
+          \utblogo[image=\utb@logotwoimage,
+                    height=\utb@covh,
+                    layout=\utb@logotwolayout,
+                    vn=\utb@logotwovn,
+                    en=\utb@logotwoen,
+                    color=\utb@logotwocolor,
+                    equalwidth=false]%
+        }%
+      \fi%
+    \fi
+    \leavevmode%
+    \begin{tikzpicture}[remember picture, overlay]
+      \ifx\utb@coverbg\utb@coverbg@solid
+        \fill[utbmain] (current page.south west) rectangle (current page.north east);
+      \else\ifx\utb@coverbg\utb@coverbg@light
+        \fill[white] (current page.south west) rectangle (current page.north east);
+        \node[inner sep=0pt, outer sep=0pt, anchor=center, opacity=\utb@coverlight@opacity] at (current page.center) {%
+          \includegraphics[width=\paperwidth,height=\paperheight]{bg-cover-\utb@colname-\ifutb@wide 169\else 43\fi}%
+        };
+      \else
+        \node[inner sep=0pt, outer sep=0pt, anchor=center] at (current page.center) {%
+          \includegraphics[width=\paperwidth,height=\paperheight]{bg-cover-\utb@colname-\ifutb@wide 169\else 43\fi}%
+        };
+      \fi\fi
+      %% Official UTB logo at top left (Slot 1)
+      \node[inner sep=0pt, outer sep=0pt, anchor=north west] (logo1)
+        at ([xshift=\utb@fW{coverLogoX}, yshift=-\utb@fH{coverLogoY}] current page.north west) {%
+          \usebox\utb@box
+        };
+      %% Slot 2: Co-branding / Unit logo
+      \ifnum\utb@has@logotwo=1
+        \node[inner sep=0pt, outer sep=0pt, anchor=north west] (logo2)
+          at ([yshift=-0.16cm] logo1.south west) {%
+            \usebox\utb@boxb
+          };
+      \fi
+      %% Title, Subtitle, Author block
+      \ifx\utb@coverbg\utb@coverbg@solid
+        \node[inner sep=0pt, outer sep=0pt, anchor=north west, text width=\utb@fW{coverTextW}, align=left]
+          at ([xshift=\utb@fW{coverLogoX}, yshift=-\utb@fH{coverTitleY}] current page.north west) {%
+          {\usebeamerfont{title}\color{white}\MakeUppercase{\inserttitle}\par}%
+          \ifx\insertsubtitle\@empty\else
+            \vspace{0.5em}%
+            {\usebeamerfont{subtitle}\color{white!90}\insertsubtitle\par}%
+          \fi
+          \vspace{1.3em}%
+          {\usebeamerfont{author}\color{utbyellow}\insertauthor\par}%
+          \ifx\insertinstitute\@empty\else
+            \vspace{0.3em}%
+            {\usebeamerfont{institute}\color{white!90}\insertinstitute\par}%
+          \fi
+          \ifx\insertdate\@empty\else
+            \vspace{0.3em}%
+            {\usebeamerfont{date}\color{white!80}\insertdate\par}%
+          \fi
+        };
+        \ifx\utb@slogan\utb@opt@on
+          \node[inner sep=0pt, outer sep=0pt, anchor=south west]
+            at ([xshift=\utb@fW{coverLogoX}, yshift=\utb@fH{sloganY}] current page.south west) {%
+            {\usebeamerfont{slogan}\color{white}\utb@slogantext}%
+          };
+        \fi
+      \else
+        \node[inner sep=0pt, outer sep=0pt, anchor=north west, text width=\utb@fW{coverTextW}, align=left]
+          at ([xshift=\utb@fW{coverLogoX}, yshift=-\utb@fH{coverTitleY}] current page.north west) {%
+          {\usebeamerfont{title}\color{utbcover}\MakeUppercase{\inserttitle}\par}%
+          \ifx\insertsubtitle\@empty\else
+            \vspace{0.5em}%
+            {\usebeamerfont{subtitle}\color{utbblack}\insertsubtitle\par}%
+          \fi
+          \vspace{1.3em}%
+          {\usebeamerfont{author}\color{utbaccent}\insertauthor\par}%
+          \ifx\insertinstitute\@empty\else
+            \vspace{0.3em}%
+            {\usebeamerfont{institute}\color{utbblack}\insertinstitute\par}%
+          \fi
+          \ifx\insertdate\@empty\else
+            \vspace{0.3em}%
+            {\usebeamerfont{date}\color{utbblack!75}\insertdate\par}%
+          \fi
+        };
+        \ifx\utb@slogan\utb@opt@on
+          \node[inner sep=0pt, outer sep=0pt, anchor=south west]
+            at ([xshift=\utb@fW{coverLogoX}, yshift=\utb@fH{sloganY}] current page.south west) {%
+            {\usebeamerfont{slogan}\color{utbcover}\utb@slogantext}%
+          };
+        \fi
+      \fi
+    \end{tikzpicture}
+  \fi\fi
+}
+
+%% ------------------------------------------------------------- Table of Contents
+\defbeamertemplate*{section in toc}{UTB}{%
+  \leavevmode%
+  \begin{tikzpicture}[baseline={(box.center)}]
+    \node[inner sep=0pt, minimum size=1.35em, fill=utbmain, text=white, font=\bfseries\small, anchor=center] (box) at (0, 0)
+      {\hfil\inserttocsectionnumber\hfil};
+    \node[anchor=west, inner sep=0pt, text width=\dimexpr\linewidth - 2.5em\relax, align=left] at ([xshift=0.6em] box.east)
+      {\usebeamerfont{section in toc}\color{utbmain}\inserttocsection};
+  \end{tikzpicture}\par\vskip 0.7em%
+}
+
+\defbeamertemplate*{subsection in toc}{UTB}{%
+  \leavevmode\hskip 2.1em%
+  \textcolor{utbblack}{\rule{0.65ex}{0.65ex}}\hskip 0.6em%
+  {\usebeamerfont{subsection in toc}\color{utbblack}\inserttocsubsection}\par\vskip 0.4em%
+}
+
+\define@key{beamertoc}{split}{\def\utb@toc@split{#1}}
+
+\let\utb@orig@beamer@toc\beamer@tableofcontents
+\def\beamer@tableofcontents[#1]{%
+  \def\utb@toc@split{0}%
+  \setkeys{beamertoc}{#1}%
+  \ifnum\utb@toc@split>1\relax
+    \begingroup
+      \edef\utb@saved@split{\utb@toc@split}%
+      \def\utb@toc@split{0}%
+      \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+          \utb@orig@beamer@toc[#1,split=0,sections={1-\the\numexpr\utb@saved@split-1\relax}]
+        \end{column}
+        \begin{column}{0.48\textwidth}
+          \utb@orig@beamer@toc[#1,split=0,sections={\utb@saved@split-99}]
+        \end{column}
+      \end{columns}
+    \endgroup
+  \else
+    \utb@orig@beamer@toc[#1]%
+  \fi
+}
+\newcommand{\utbtoc}[1][]{\tableofcontents[#1]}
+\let\husttoc\utbtoc
+
+\define@key{utbtoc}{split}{\def\utb@toc@split{#1}}
+\define@key{utbtoc}{title}{\def\utb@toc@title{#1}}
+\define@key{utbtoc}{subtitle}{\def\utb@toc@subtitle{#1}}
+
+\newcommand{\utb@set@tockeys}[1]{%
+  \in@{=}{#1}%
+  \ifin@
+    \setkeys{utbtoc}{#1}%
+  \else
+    \ifstrempty{#1}{}{\def\utb@toc@title{#1}}%
+  \fi
+}
+
+\newenvironment{utbtocframe}[1][]{%
+  \def\utb@toc@split{0}%
+  \let\utb@toc@title\utbtoctitle
+  \let\utb@toc@subtitle\utbtocsubtitle
+  \utb@set@tockeys{#1}%
+  \edef\utb@cur@sub{\utb@toc@subtitle}%
+  \ifdefstring{\utb@cur@sub}{Hidden}{\def\utb@cur@sub{}}{}%
+  \ifdefstring{\utb@cur@sub}{hidden}{\def\utb@cur@sub{}}{}%
+  \ifdefstring{\utb@cur@sub}{none}{\def\utb@cur@sub{}}{}%
+  \begin{frame}[environment=utbtocframe,noprogressbar]%
+    \frametitle{\utb@toc@title}%
+    \ifx\utb@cur@sub\@empty\else
+      \framesubtitle{\utb@cur@sub}%
+    \fi
+    \ifnum\utb@toc@split>1\relax
+      \tableofcontents[split=\utb@toc@split,hideallsubsections]%
+    \else
+      \tableofcontents[hideallsubsections]%
+    \fi
+}{%
+  \end{frame}%
+}
+
+\newcommand{\utbprinttoc}[1][]{\utbtocframe[#1]}
+\let\hustprinttoc\utbprinttoc
+\let\husttocframe\utbtocframe
+\let\endhusttocframe\endutbtocframe
+
+%% ------------------------------------------------------------- Section Page
+\def\utb@sec@panel{panel}
+\defbeamertemplate*{section page}{UTB}[1][]{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[inner sep=0pt, outer sep=0pt, anchor=center] at (current page.center) {%
+      \includegraphics[width=\paperwidth,height=\paperheight]{bg-panel-\utb@colname-\ifutb@wide 169\else 43\fi\ifx\utb@panelsocial\utb@opt@off -clean\fi}%
+    };
+    \ifx\utb@framebg\utb@opt@on
+      \utb@resolve@diagimg
+      \def\utb@cur@framebgh{%
+        \ifx\utb@framebg@height\utb@val@auto
+          \ifutb@wide 0.28\paperheight\else 0.26\paperheight\fi
+        \else
+          \utb@framebg@height
+        \fi
+      }%
+      \node[inner sep=0pt, outer sep=0pt, anchor=south east, opacity=\utb@framebg@opacity]
+        at ([xshift=0pt, yshift=0pt] current page.south east) {%
+          \includegraphics[height=\utb@cur@framebgh,keepaspectratio]{\utb@diag@img}%
+        };
+    \fi
+    \node[anchor=west, text width=0.56\paperwidth, align=left]
+      at ([xshift=0.38\paperwidth, yshift=0pt] current page.west) {%
+        \tableofcontents[sections=\the\c@section,currentsection]%
+      };
+  \end{tikzpicture}
+}
+
+\newif\ifutb@sec@panel@explicit
+\utb@sec@panel@explicitfalse
+\gdef\utb@pending@secalias{}
+
+\pgfkeys{/utbsection/.cd,
+  panel/.is choice,
+  panel/true/.code={\global\utb@sec@showpaneltrue\global\utb@sec@panel@explicittrue},
+  panel/false/.code={\global\utb@sec@showpanelfalse\global\utb@sec@panel@explicittrue},
+  panel/on/.code={\global\utb@sec@showpaneltrue\global\utb@sec@panel@explicittrue},
+  panel/off/.code={\global\utb@sec@showpanelfalse\global\utb@sec@panel@explicittrue},
+  true/.code={\global\utb@sec@showpaneltrue\global\utb@sec@panel@explicittrue},
+  false/.code={\global\utb@sec@showpanelfalse\global\utb@sec@panel@explicittrue},
+  on/.code={\global\utb@sec@showpaneltrue\global\utb@sec@panel@explicittrue},
+  off/.code={\global\utb@sec@showpanelfalse\global\utb@sec@panel@explicittrue},
+  none/.code={\global\utb@sec@showpanelfalse\global\utb@sec@panel@explicittrue},
+  alias/.code={\gdef\utb@pending@secalias{#1}},
+  short/.code={\gdef\utb@pending@secalias{#1}},
+  .unknown/.code={},
+}
+
+\newcommand{\utbsection}[1][panel=true]{%
+  \pgfkeys{/utbsection/.cd, #1}%
+}
+\let\hustsection\utbsection
+
+\newcommand{\utb@sectionframe@internal}{%
+  \ifutb@sec@showpanel
+    \ifx\utb@sectionpage\utb@sec@panel
+      \begin{frame}[plain,noframenumbering]%
+        \sectionpage%
+      \end{frame}%
+    \fi
+  \fi
+  \global\utb@sec@panel@explicitfalse
+}
+
+\let\utb@orig@section\section
+\RenewDocumentCommand{\section}{ o m }{%
+  \IfValueTF{#1}{%
+    \utb@orig@section[#1]{#2}%
+  }{%
+    \ifx\utb@pending@secalias\@empty
+      \utb@orig@section{#2}%
+    \else
+      \utb@orig@section[\utb@pending@secalias]{#2}%
+      \gdef\utb@pending@secalias{}%
+    \fi
+  }%
+  \utb@sectionframe@internal%
+}
+
+\mode<all>
+\endinput

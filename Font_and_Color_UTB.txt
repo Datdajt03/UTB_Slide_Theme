@@ -1,0 +1,7 @@
+Xanh navy #0B2D4F: Màu nhận diện thứ hai
+Xanh non : #cdfab1: Màu nhạt
+Xanh đậm : #12711f Màu đậm
+Trắng : #FFFFFF
+Xanh đậm : #105419 Nền banner dàn ý slide
+Font logo: barber fill
+Font chữ: Rokkit
